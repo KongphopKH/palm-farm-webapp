@@ -1,14 +1,21 @@
 import { createClient } from "@supabase/supabase-js";
 
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+// Use `||` (not `??`) throughout this file: an *unset* GitHub Actions
+// secret is interpolated as an empty string, not omitted, so a nullish
+// check alone lets "" slip through as if it were a real value and crashes
+// the Supabase client ("supabaseUrl is required."). Treating "" the same
+// as undefined keeps the build resilient whether env vars are missing,
+// unset secrets, or genuinely empty.
+const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || undefined;
 
 // Supabase's newer projects use "publishable" keys instead of the legacy
 // JWT "anon" key, and the dashboard's own Connect snippet now generates
 // NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY. We accept either name so the app
 // works whichever key type your project (and the Connect dialog) gives you.
 const supabaseAnonKey =
-  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY ??
-  process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY;
+  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY ||
+  process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY ||
+  undefined;
 
 /** True when real Supabase credentials are configured via env vars. */
 export const isSupabaseConfigured = Boolean(supabaseUrl && supabaseAnonKey);
@@ -31,6 +38,6 @@ if (!isSupabaseConfigured && typeof window !== "undefined") {
  * `isSupabaseConfigured` before relying on real data.
  */
 export const supabase = createClient(
-  supabaseUrl ?? "https://placeholder.supabase.co",
-  supabaseAnonKey ?? "public-anon-key-placeholder"
+  supabaseUrl || "https://placeholder.supabase.co",
+  supabaseAnonKey || "public-anon-key-placeholder"
 );
