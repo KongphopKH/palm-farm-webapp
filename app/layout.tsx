@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import "./globals.css";
 import BottomNav from "@/components/BottomNav";
+import { basePath } from "@/lib/site";
 
 // Deliberately using a system font stack (see globals.css) instead of
 // next/font/google: it renders Thai text well on every platform out of the
@@ -12,13 +13,13 @@ import BottomNav from "@/components/BottomNav";
 export const metadata: Metadata = {
   title: "Smart Palm Farm | บริหารจัดการสวนปาล์ม",
   description: "แอปบันทึกและบริหารจัดการสวนปาล์มน้ำมันสำหรับเกษตรกร",
-  manifest: "/manifest.json",
+  manifest: `${basePath}/manifest.json`,
   icons: {
     icon: [
-      { url: "/icon-192.png", sizes: "192x192", type: "image/png" },
-      { url: "/icon-512.png", sizes: "512x512", type: "image/png" },
+      { url: `${basePath}/icon-192.png`, sizes: "192x192", type: "image/png" },
+      { url: `${basePath}/icon-512.png`, sizes: "512x512", type: "image/png" },
     ],
-    apple: [{ url: "/apple-touch-icon.png", sizes: "180x180", type: "image/png" }],
+    apple: [{ url: `${basePath}/apple-touch-icon.png`, sizes: "180x180", type: "image/png" }],
   },
   appleWebApp: {
     capable: true,
