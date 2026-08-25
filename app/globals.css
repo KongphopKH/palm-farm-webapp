@@ -1,0 +1,23 @@
+@import "tailwindcss";
+
+:root {
+  --background: #fafaf9;
+  --foreground: #1c1917;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: "Leelawadee UI", "Noto Sans Thai", "Segoe UI", "PingFang TH", system-ui,
+    -apple-system, sans-serif;
+}
+
+/*
+ * This app targets mobile use by non-technical adults, so we intentionally
+ * keep a single, always-light theme with strong contrast and large text
+ * rather than following the system dark-mode preference.
+ */
+body {
+  background: var(--background);
+  color: var(--foreground);
+}
