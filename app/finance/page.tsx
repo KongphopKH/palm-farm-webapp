@@ -4,32 +4,58 @@ import { useEffect, useState } from "react";
 import PageHeader from "@/components/PageHeader";
 import Banner from "@/components/Banner";
 import StatCard from "@/components/StatCard";
-import { getExpenses, getHarvests } from "@/lib/queries";
+import HarvestRow from "@/components/HarvestRow";
+import ExpenseRow from "@/components/ExpenseRow";
+import { getExpenses, getHarvests, getPlots } from "@/lib/queries";
 import { isSupabaseConfigured } from "@/lib/supabase";
-import { formatCurrency, formatDateThai } from "@/lib/format";
-import type { Expense, Harvest } from "@/types";
+import { formatCurrency } from "@/lib/format";
+import type { Expense, Harvest, Plot } from "@/types";
 
 type Tab = "income" | "expense";
 
 export default function FinancePage() {
   const [harvests, setHarvests] = useState<Harvest[]>([]);
   const [expenses, setExpenses] = useState<Expense[]>([]);
+  const [plots, setPlots] = useState<Plot[]>([]);
   const [loading, setLoading] = useState(isSupabaseConfigured);
   const [error, setError] = useState<string | null>(null);
   const [tab, setTab] = useState<Tab>("income");
 
+  async function refreshLists() {
+    try {
+      const [h, e] = await Promise.all([getHarvests(100), getExpenses(100)]);
+      setHarvests(h);
+      setExpenses(e);
+    } catch (err) {
+      console.error(err);
+      setError("โหลดข้อมูลบัญชีไม่สำเร็จ");
+    }
+  }
+
   useEffect(() => {
     if (!isSupabaseConfigured) return;
-    Promise.all([getHarvests(100), getExpenses(100)])
-      .then(([h, e]) => {
+    let cancelled = false;
+
+    Promise.all([getHarvests(100), getExpenses(100), getPlots()])
+      .then(([h, e, p]) => {
+        if (cancelled) return;
         setHarvests(h);
         setExpenses(e);
+        setPlots(p);
       })
       .catch((err) => {
-        console.error(err);
-        setError("โหลดข้อมูลบัญชีไม่สำเร็จ");
+        if (!cancelled) {
+          console.error(err);
+          setError("โหลดข้อมูลบัญชีไม่สำเร็จ");
+        }
       })
-      .finally(() => setLoading(false));
+      .finally(() => {
+        if (!cancelled) setLoading(false);
+      });
+
+    return () => {
+      cancelled = true;
+    };
   }, []);
 
   const totalIncome = harvests.reduce((sum, h) => sum + Number(h.total_price ?? 0), 0);
@@ -74,57 +100,19 @@ export default function FinancePage() {
           harvests.length === 0 ? (
             <p className="py-8 text-center text-stone-400">ยังไม่มีประวัติการขาย</p>
           ) : (
-            <div className="overflow-x-auto rounded-2xl bg-white shadow-sm ring-1 ring-stone-200">
-              <table className="w-full text-sm">
-                <thead className="bg-stone-50 text-stone-500">
-                  <tr>
-                    <th className="px-3 py-2.5 text-left font-semibold">วันที่</th>
-                    <th className="px-3 py-2.5 text-right font-semibold">น้ำหนัก (กก.)</th>
-                    <th className="px-3 py-2.5 text-right font-semibold">ยอดเงิน</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {harvests.map((h) => (
-                    <tr key={h.id} className="border-t border-stone-100">
-                      <td className="whitespace-nowrap px-3 py-2.5 text-stone-600">
-                        {formatDateThai(h.sale_date)}
-                      </td>
-                      <td className="px-3 py-2.5 text-right text-stone-600">{h.weight_kg}</td>
-                      <td className="whitespace-nowrap px-3 py-2.5 text-right font-bold text-green-700">
-                        {formatCurrency(h.total_price)}
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
+            <div className="flex flex-col gap-3">
+              {harvests.map((h) => (
+                <HarvestRow key={h.id} harvest={h} plots={plots} onChanged={refreshLists} />
+              ))}
             </div>
           )
         ) : expenses.length === 0 ? (
           <p className="py-8 text-center text-stone-400">ยังไม่มีประวัติรายจ่าย</p>
         ) : (
-          <div className="overflow-x-auto rounded-2xl bg-white shadow-sm ring-1 ring-stone-200">
-            <table className="w-full text-sm">
-              <thead className="bg-stone-50 text-stone-500">
-                <tr>
-                  <th className="px-3 py-2.5 text-left font-semibold">วันที่</th>
-                  <th className="px-3 py-2.5 text-left font-semibold">หมวดหมู่</th>
-                  <th className="px-3 py-2.5 text-right font-semibold">จำนวนเงิน</th>
-                </tr>
-              </thead>
-              <tbody>
-                {expenses.map((e) => (
-                  <tr key={e.id} className="border-t border-stone-100">
-                    <td className="whitespace-nowrap px-3 py-2.5 text-stone-600">
-                      {formatDateThai(e.date)}
-                    </td>
-                    <td className="px-3 py-2.5 text-stone-600">{e.category}</td>
-                    <td className="whitespace-nowrap px-3 py-2.5 text-right font-bold text-red-600">
-                      {formatCurrency(e.amount)}
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
+          <div className="flex flex-col gap-3">
+            {expenses.map((e) => (
+              <ExpenseRow key={e.id} expense={e} onChanged={refreshLists} />
+            ))}
           </div>
         )}
       </div>

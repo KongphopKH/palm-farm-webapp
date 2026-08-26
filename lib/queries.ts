@@ -16,6 +16,20 @@ export async function addPlot(input: Omit<Plot, "id" | "created_at">): Promise<P
   return data as Plot;
 }
 
+export async function updatePlot(
+  id: string,
+  input: Partial<Omit<Plot, "id" | "created_at">>
+): Promise<Plot> {
+  const { data, error } = await supabase.from("plots").update(input).eq("id", id).select().single();
+  if (error) throw error;
+  return data as Plot;
+}
+
+export async function deletePlot(id: string): Promise<void> {
+  const { error } = await supabase.from("plots").delete().eq("id", id);
+  if (error) throw error;
+}
+
 // ---------- Activities ----------
 
 export async function getActivities(limit = 50): Promise<Activity[]> {
@@ -32,6 +46,25 @@ export async function addActivity(input: Omit<Activity, "id" | "created_at">): P
   const { data, error } = await supabase.from("activities").insert(input).select().single();
   if (error) throw error;
   return data as Activity;
+}
+
+export async function updateActivity(
+  id: string,
+  input: Partial<Omit<Activity, "id" | "created_at">>
+): Promise<Activity> {
+  const { data, error } = await supabase
+    .from("activities")
+    .update(input)
+    .eq("id", id)
+    .select()
+    .single();
+  if (error) throw error;
+  return data as Activity;
+}
+
+export async function deleteActivity(id: string): Promise<void> {
+  const { error } = await supabase.from("activities").delete().eq("id", id);
+  if (error) throw error;
 }
 
 // ---------- Harvests ----------
@@ -57,6 +90,25 @@ export async function addHarvest(
   const { data, error } = await supabase.from("harvests").insert(input).select().single();
   if (error) throw error;
   return data as Harvest;
+}
+
+export async function updateHarvest(
+  id: string,
+  input: Partial<Omit<Harvest, "id" | "created_at" | "total_price">>
+): Promise<Harvest> {
+  const { data, error } = await supabase
+    .from("harvests")
+    .update(input)
+    .eq("id", id)
+    .select()
+    .single();
+  if (error) throw error;
+  return data as Harvest;
+}
+
+export async function deleteHarvest(id: string): Promise<void> {
+  const { error } = await supabase.from("harvests").delete().eq("id", id);
+  if (error) throw error;
 }
 
 export async function getLastHarvestDate(): Promise<string | null> {
@@ -86,6 +138,25 @@ export async function addExpense(input: Omit<Expense, "id" | "created_at">): Pro
   const { data, error } = await supabase.from("expenses").insert(input).select().single();
   if (error) throw error;
   return data as Expense;
+}
+
+export async function updateExpense(
+  id: string,
+  input: Partial<Omit<Expense, "id" | "created_at">>
+): Promise<Expense> {
+  const { data, error } = await supabase
+    .from("expenses")
+    .update(input)
+    .eq("id", id)
+    .select()
+    .single();
+  if (error) throw error;
+  return data as Expense;
+}
+
+export async function deleteExpense(id: string): Promise<void> {
+  const { error } = await supabase.from("expenses").delete().eq("id", id);
+  if (error) throw error;
 }
 
 // ---------- Dashboard summary ----------

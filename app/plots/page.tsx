@@ -147,7 +147,7 @@ export default function PlotsPage() {
         ) : (
           <div className="flex flex-col gap-3">
             {plots.map((plot) => (
-              <PlotCard key={plot.id} plot={plot} />
+              <PlotCard key={plot.id} plot={plot} onChanged={refreshPlots} />
             ))}
           </div>
         )}
