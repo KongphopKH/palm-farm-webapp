@@ -2,11 +2,12 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Home, Map, Wallet2 } from "lucide-react";
+import { CalendarDays, Home, Map, Wallet2 } from "lucide-react";
 
 const items = [
   { href: "/", label: "หน้าแรก", icon: Home },
   { href: "/plots", label: "แปลงปาล์ม", icon: Map },
+  { href: "/calendar", label: "ปฏิทิน", icon: CalendarDays },
   { href: "/finance", label: "บัญชีฟาร์ม", icon: Wallet2 },
 ] as const;
 

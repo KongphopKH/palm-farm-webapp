@@ -67,6 +67,17 @@ export async function deleteActivity(id: string): Promise<void> {
   if (error) throw error;
 }
 
+export async function getActivitiesInRange(from: string, to: string): Promise<Activity[]> {
+  const { data, error } = await supabase
+    .from("activities")
+    .select("*")
+    .gte("date", from)
+    .lte("date", to)
+    .order("date", { ascending: true });
+  if (error) throw error;
+  return data ?? [];
+}
+
 // ---------- Harvests ----------
 
 export async function getHarvests(limit = 50): Promise<Harvest[]> {
@@ -109,6 +120,17 @@ export async function updateHarvest(
 export async function deleteHarvest(id: string): Promise<void> {
   const { error } = await supabase.from("harvests").delete().eq("id", id);
   if (error) throw error;
+}
+
+export async function getHarvestsInRange(from: string, to: string): Promise<Harvest[]> {
+  const { data, error } = await supabase
+    .from("harvests")
+    .select("*")
+    .gte("sale_date", from)
+    .lte("sale_date", to)
+    .order("sale_date", { ascending: true });
+  if (error) throw error;
+  return data ?? [];
 }
 
 export async function getLastHarvestDate(): Promise<string | null> {
@@ -157,6 +179,17 @@ export async function updateExpense(
 export async function deleteExpense(id: string): Promise<void> {
   const { error } = await supabase.from("expenses").delete().eq("id", id);
   if (error) throw error;
+}
+
+export async function getExpensesInRange(from: string, to: string): Promise<Expense[]> {
+  const { data, error } = await supabase
+    .from("expenses")
+    .select("*")
+    .gte("date", from)
+    .lte("date", to)
+    .order("date", { ascending: true });
+  if (error) throw error;
+  return data ?? [];
 }
 
 // ---------- Dashboard summary ----------
