@@ -6,8 +6,14 @@ export interface WeatherTip {
 
 // Defaults to Surat Thani, a major oil-palm growing province in Thailand.
 // Override with NEXT_PUBLIC_FARM_LAT / NEXT_PUBLIC_FARM_LON for your farm.
-const LAT = process.env.NEXT_PUBLIC_FARM_LAT ?? "9.1382";
-const LON = process.env.NEXT_PUBLIC_FARM_LON ?? "99.3215";
+//
+// Uses `||` rather than `??`: GitHub Actions substitutes an unset
+// `vars.NEXT_PUBLIC_FARM_LAT` with an EMPTY STRING (not undefined), and `??`
+// only falls back on null/undefined — so an empty string would sail through
+// as a real (blank) coordinate instead of hitting the default. Same class of
+// bug as the earlier Supabase env var fix.
+const LAT = process.env.NEXT_PUBLIC_FARM_LAT || "9.1382";
+const LON = process.env.NEXT_PUBLIC_FARM_LON || "99.3215";
 
 /**
  * Fetches a very basic weather tip from Open-Meteo (free, no API key
@@ -37,7 +43,8 @@ export async function fetchWeatherTip(): Promise<WeatherTip> {
     }
 
     return { tempC, isRaining, message };
-  } catch {
+  } catch (err) {
+    console.error("fetchWeatherTip failed:", err);
     return {
       tempC: null,
       isRaining: false,
