@@ -1,10 +1,9 @@
 "use client";
 
-import { useState, type ChangeEvent } from "react";
+import { useState } from "react";
 import { LocateFixed, MapPin } from "lucide-react";
 import { upsertFarmSettings } from "@/lib/queries";
-import { SelectField } from "@/components/FormControls";
-import { THAI_PROVINCES } from "@/lib/thai-provinces";
+import FarmLocationMapPicker from "@/components/FarmLocationMapPicker";
 import type { FarmSettings } from "@/types";
 
 interface FarmLocationPromptProps {
@@ -12,12 +11,15 @@ interface FarmLocationPromptProps {
   onSaved: (settings: FarmSettings) => void;
 }
 
+// Fallback map center when no farm location is saved yet — Surat Thani,
+// a major oil-palm growing province (same default used by lib/weather.ts).
+const DEFAULT_MAP_LAT = 9.1382;
+const DEFAULT_MAP_LON = 99.3215;
+
 export default function FarmLocationPrompt({ location, onSaved }: FarmLocationPromptProps) {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [pickerOpen, setPickerOpen] = useState(false);
-  const [provinceSaving, setProvinceSaving] = useState(false);
-  const [provinceError, setProvinceError] = useState<string | null>(null);
 
   function handleUseCurrentLocation() {
     if (typeof navigator === "undefined" || !("geolocation" in navigator)) {
@@ -54,22 +56,10 @@ export default function FarmLocationPrompt({ location, onSaved }: FarmLocationPr
     );
   }
 
-  async function handleProvinceSelect(e: ChangeEvent<HTMLSelectElement>) {
-    const province = THAI_PROVINCES.find((p) => p.name === e.target.value);
-    if (!province) return;
-
-    setProvinceSaving(true);
-    setProvinceError(null);
-    try {
-      const settings = await upsertFarmSettings(province.lat, province.lon);
-      onSaved(settings);
-      setPickerOpen(false);
-    } catch (err) {
-      console.error(err);
-      setProvinceError("บันทึกตำแหน่งไม่สำเร็จ กรุณาลองใหม่อีกครั้ง");
-    } finally {
-      setProvinceSaving(false);
-    }
+  async function handleMapSave(lat: number, lon: number) {
+    const settings = await upsertFarmSettings(lat, lon);
+    onSaved(settings);
+    setPickerOpen(false);
   }
 
   return (
@@ -106,35 +96,17 @@ export default function FarmLocationPrompt({ location, onSaved }: FarmLocationPr
           onClick={() => setPickerOpen(true)}
           className="self-start text-xs font-semibold text-stone-500 underline decoration-stone-300 underline-offset-2 active:text-stone-700"
         >
-          ไม่ได้อยู่ที่สวนตอนนี้? เลือกจังหวัดแทน
+          ไม่ได้อยู่ที่สวนตอนนี้? เลือกจากแผนที่
         </button>
       ) : (
-        <div className="flex flex-col gap-2 border-t border-stone-100 pt-3">
-          <SelectField
-            label="จังหวัดที่ตั้งสวน"
-            defaultValue=""
-            disabled={provinceSaving}
-            onChange={handleProvinceSelect}
-          >
-            <option value="" disabled>
-              เลือกจังหวัด
-            </option>
-            {THAI_PROVINCES.map((p) => (
-              <option key={p.name} value={p.name}>
-                {p.name}
-              </option>
-            ))}
-          </SelectField>
-          {provinceSaving ? <p className="text-xs text-stone-400">กำลังบันทึก...</p> : null}
-          {provinceError ? <p className="text-xs font-medium text-red-600">{provinceError}</p> : null}
-          <button
-            type="button"
-            onClick={() => setPickerOpen(false)}
-            disabled={provinceSaving}
-            className="self-start text-xs font-semibold text-stone-500 active:text-stone-700"
-          >
-            ยกเลิก
-          </button>
+        <div className="border-t border-stone-100 pt-3">
+          <FarmLocationMapPicker
+            initialLat={location?.farm_lat ?? DEFAULT_MAP_LAT}
+            initialLon={location?.farm_lon ?? DEFAULT_MAP_LON}
+            hasSavedLocation={Boolean(location)}
+            onSave={handleMapSave}
+            onCancel={() => setPickerOpen(false)}
+          />
         </div>
       )}
     </div>
