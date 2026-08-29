@@ -1,12 +1,13 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { ClipboardList, Clock3, ReceiptText, ShoppingBasket } from "lucide-react";
-import BigActionButton from "@/components/BigActionButton";
+import { ChevronDown, ChevronUp, ClipboardList, Clock3, ReceiptText, ShoppingBasket } from "lucide-react";
+import QuickActionButton from "@/components/QuickActionButton";
 import StatCard from "@/components/StatCard";
 import Banner from "@/components/Banner";
 import FarmLocationPrompt from "@/components/FarmLocationPrompt";
 import WeatherOutlook from "@/components/WeatherOutlook";
+import RainWindowNotice from "@/components/RainWindowNotice";
 import { isSupabaseConfigured } from "@/lib/supabase";
 import { getFarmSettings, getLastHarvestDate, getMonthlySummary, type MonthlySummary } from "@/lib/queries";
 import { fetchWeatherTip, type WeatherTip } from "@/lib/weather";
@@ -21,6 +22,7 @@ export default function DashboardPage() {
   const [weather, setWeather] = useState<WeatherTip | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [detailsOpen, setDetailsOpen] = useState(false);
 
   useEffect(() => {
     let cancelled = false;
@@ -108,6 +110,31 @@ export default function DashboardPage() {
       ) : null}
       {error ? <Banner variant="error">{error}</Banner> : null}
 
+      {/* Most-used actions first, in easy thumb reach — not buried at the
+          bottom of the page after everything else. */}
+      <section>
+        <div className="grid grid-cols-3 gap-3">
+          <QuickActionButton
+            href="/harvest/new"
+            label="ขายปาล์ม"
+            icon={<ShoppingBasket className="h-6 w-6" />}
+            colorClass="bg-green-600"
+          />
+          <QuickActionButton
+            href="/activities/new"
+            label="บันทึกกิจกรรม"
+            icon={<ClipboardList className="h-6 w-6" />}
+            colorClass="bg-blue-600"
+          />
+          <QuickActionButton
+            href="/expenses/new"
+            label="บันทึกรายจ่าย"
+            icon={<ReceiptText className="h-6 w-6" />}
+            colorClass="bg-red-600"
+          />
+        </div>
+      </section>
+
       <section>
         <h2 className="mb-2 text-sm font-bold uppercase tracking-wide text-stone-400">
           สรุปการเงินเดือนนี้
@@ -149,39 +176,34 @@ export default function DashboardPage() {
         {weather ? (
           <Banner variant={weather.isRaining ? "warning" : "success"}>{weather.message}</Banner>
         ) : null}
-        {weather ? (
-          <WeatherOutlook
-            rainWindowsToday={weather.rainWindowsToday}
-            dailyForecast={weather.dailyForecast}
-          />
-        ) : null}
-        {isSupabaseConfigured ? (
-          <FarmLocationPrompt location={farmSettings} onSaved={handleLocationSaved} />
-        ) : null}
-      </section>
+        {weather ? <RainWindowNotice windows={weather.rainWindowsToday} /> : null}
 
-      <section className="space-y-3">
-        <h2 className="text-sm font-bold uppercase tracking-wide text-stone-400">บันทึกด่วน</h2>
-        <div className="flex flex-col gap-3">
-          <BigActionButton
-            href="/harvest/new"
-            label="บันทึกการขายปาล์ม"
-            icon={<ShoppingBasket className="h-6 w-6" />}
-            colorClass="bg-green-600 active:bg-green-700"
-          />
-          <BigActionButton
-            href="/activities/new"
-            label="บันทึกกิจกรรมในแปลง"
-            icon={<ClipboardList className="h-6 w-6" />}
-            colorClass="bg-blue-600 active:bg-blue-700"
-          />
-          <BigActionButton
-            href="/expenses/new"
-            label="บันทึกรายจ่าย"
-            icon={<ReceiptText className="h-6 w-6" />}
-            colorClass="bg-red-600 active:bg-red-700"
-          />
-        </div>
+        {/* Secondary/occasional info (5-day outlook, farm location setup)
+            tucked behind one tap so the page doesn't get cluttered. */}
+        <button
+          type="button"
+          onClick={() => setDetailsOpen((v) => !v)}
+          className="flex items-center gap-1 text-xs font-semibold text-stone-500 active:text-stone-700"
+        >
+          {detailsOpen ? (
+            <>
+              ซ่อนรายละเอียด <ChevronUp className="h-3.5 w-3.5" />
+            </>
+          ) : (
+            <>
+              ดูพยากรณ์ล่วงหน้า 5 วัน และตั้งค่าตำแหน่งสวน <ChevronDown className="h-3.5 w-3.5" />
+            </>
+          )}
+        </button>
+
+        {detailsOpen ? (
+          <div className="flex flex-col gap-3">
+            {weather ? <WeatherOutlook dailyForecast={weather.dailyForecast} /> : null}
+            {isSupabaseConfigured ? (
+              <FarmLocationPrompt location={farmSettings} onSaved={handleLocationSaved} />
+            ) : null}
+          </div>
+        ) : null}
       </section>
     </div>
   );
