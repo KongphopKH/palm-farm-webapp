@@ -1,5 +1,5 @@
 import { supabase } from "./supabase";
-import { startOfMonthISO, endOfMonthISO } from "./format";
+import { startOfMonthISO, endOfMonthISO, monthRangeISO } from "./format";
 import type { Activity, Expense, FarmSettings, Harvest, Plot } from "@/types";
 
 // ---------- Plots ----------
@@ -222,6 +222,57 @@ export async function getMonthlySummary(): Promise<MonthlySummary> {
   );
 
   return { income, expense, profit: income - expense };
+}
+
+export interface MonthlyTrendPoint {
+  year: number;
+  month: number; // 0-indexed, like Date#getMonth
+  income: number;
+  expense: number;
+}
+
+/** Income/expense per month for the last `months` months (oldest first, current
+ *  month last) — powers the finance page's trend chart. */
+export async function getMonthlyTrend(months = 6): Promise<MonthlyTrendPoint[]> {
+  const now = new Date();
+  const points: { year: number; month: number }[] = [];
+  for (let i = months - 1; i >= 0; i--) {
+    const d = new Date(now.getFullYear(), now.getMonth() - i, 1);
+    points.push({ year: d.getFullYear(), month: d.getMonth() });
+  }
+
+  const from = monthRangeISO(points[0].year, points[0].month).from;
+  const to = monthRangeISO(points[points.length - 1].year, points[points.length - 1].month).to;
+
+  const [harvestRes, expenseRes] = await Promise.all([
+    supabase
+      .from("harvests")
+      .select("total_price, sale_date")
+      .gte("sale_date", from)
+      .lte("sale_date", to),
+    supabase.from("expenses").select("amount, date").gte("date", from).lte("date", to),
+  ]);
+
+  if (harvestRes.error) throw harvestRes.error;
+  if (expenseRes.error) throw expenseRes.error;
+
+  const monthKey = (year: number, month: number) => `${year}-${String(month + 1).padStart(2, "0")}`;
+  const buckets = new Map<string, { income: number; expense: number }>();
+  for (const p of points) buckets.set(monthKey(p.year, p.month), { income: 0, expense: 0 });
+
+  for (const row of harvestRes.data ?? []) {
+    const bucket = buckets.get(String(row.sale_date).slice(0, 7));
+    if (bucket) bucket.income += Number(row.total_price ?? 0);
+  }
+  for (const row of expenseRes.data ?? []) {
+    const bucket = buckets.get(String(row.date).slice(0, 7));
+    if (bucket) bucket.expense += Number(row.amount ?? 0);
+  }
+
+  return points.map((p) => {
+    const bucket = buckets.get(monthKey(p.year, p.month))!;
+    return { year: p.year, month: p.month, income: bucket.income, expense: bucket.expense };
+  });
 }
 
 // ---------- Farm settings (location, for weather lookups) ----------

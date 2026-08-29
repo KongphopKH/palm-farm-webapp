@@ -6,7 +6,14 @@ import Banner from "@/components/Banner";
 import StatCard from "@/components/StatCard";
 import HarvestRow from "@/components/HarvestRow";
 import ExpenseRow from "@/components/ExpenseRow";
-import { getExpenses, getHarvests, getPlots } from "@/lib/queries";
+import FinanceTrendChart from "@/components/FinanceTrendChart";
+import {
+  getExpenses,
+  getHarvests,
+  getMonthlyTrend,
+  getPlots,
+  type MonthlyTrendPoint,
+} from "@/lib/queries";
 import { isSupabaseConfigured } from "@/lib/supabase";
 import { formatCurrency } from "@/lib/format";
 import type { Expense, Harvest, Plot } from "@/types";
@@ -17,15 +24,17 @@ export default function FinancePage() {
   const [harvests, setHarvests] = useState<Harvest[]>([]);
   const [expenses, setExpenses] = useState<Expense[]>([]);
   const [plots, setPlots] = useState<Plot[]>([]);
+  const [trend, setTrend] = useState<MonthlyTrendPoint[]>([]);
   const [loading, setLoading] = useState(isSupabaseConfigured);
   const [error, setError] = useState<string | null>(null);
   const [tab, setTab] = useState<Tab>("income");
 
   async function refreshLists() {
     try {
-      const [h, e] = await Promise.all([getHarvests(100), getExpenses(100)]);
+      const [h, e, t] = await Promise.all([getHarvests(100), getExpenses(100), getMonthlyTrend(6)]);
       setHarvests(h);
       setExpenses(e);
+      setTrend(t);
     } catch (err) {
       console.error(err);
       setError("โหลดข้อมูลบัญชีไม่สำเร็จ");
@@ -36,12 +45,13 @@ export default function FinancePage() {
     if (!isSupabaseConfigured) return;
     let cancelled = false;
 
-    Promise.all([getHarvests(100), getExpenses(100), getPlots()])
-      .then(([h, e, p]) => {
+    Promise.all([getHarvests(100), getExpenses(100), getPlots(), getMonthlyTrend(6)])
+      .then(([h, e, p, t]) => {
         if (cancelled) return;
         setHarvests(h);
         setExpenses(e);
         setPlots(p);
+        setTrend(t);
       })
       .catch((err) => {
         if (!cancelled) {
@@ -72,6 +82,8 @@ export default function FinancePage() {
           <StatCard label="รายรับรวม" value={formatCurrency(totalIncome)} tone="positive" />
           <StatCard label="รายจ่ายรวม" value={formatCurrency(totalExpense)} tone="negative" />
         </div>
+
+        {!loading ? <FinanceTrendChart data={trend} /> : null}
 
         <div className="flex rounded-xl bg-stone-100 p-1">
           <button

@@ -78,6 +78,13 @@ export function formatMonthYearThai(year: number, month: number): string {
   );
 }
 
+/** e.g. "ส.ค. 69" — compact month+year label for the finance trend chart's axis. */
+export function formatMonthShortThai(year: number, month: number): string {
+  return new Intl.DateTimeFormat("th-TH", { month: "short", year: "2-digit" }).format(
+    new Date(year, month, 1)
+  );
+}
+
 /**
  * 7-column week grid (Sunday-first) for `month` (0-indexed) of `year`, padded
  * with `null` outside the month. Ready to `.map()` into a calendar table.
