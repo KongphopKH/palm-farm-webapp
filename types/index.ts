@@ -54,3 +54,11 @@ export interface Expense {
   date: string; // ISO date (YYYY-MM-DD)
   created_at?: string;
 }
+
+/** Single-row settings table — where the farm actually is, for weather lookups. */
+export interface FarmSettings {
+  id: number;
+  farm_lat: number;
+  farm_lon: number;
+  updated_at?: string;
+}

@@ -5,15 +5,18 @@ import { ClipboardList, Clock3, ReceiptText, ShoppingBasket } from "lucide-react
 import BigActionButton from "@/components/BigActionButton";
 import StatCard from "@/components/StatCard";
 import Banner from "@/components/Banner";
+import FarmLocationPrompt from "@/components/FarmLocationPrompt";
 import { isSupabaseConfigured } from "@/lib/supabase";
-import { getLastHarvestDate, getMonthlySummary, type MonthlySummary } from "@/lib/queries";
+import { getFarmSettings, getLastHarvestDate, getMonthlySummary, type MonthlySummary } from "@/lib/queries";
 import { fetchWeatherTip, type WeatherTip } from "@/lib/weather";
 import { daysFromToday, formatCurrency } from "@/lib/format";
 import { HARVEST_CYCLE_DAYS } from "@/lib/constants";
+import type { FarmSettings } from "@/types";
 
 export default function DashboardPage() {
   const [summary, setSummary] = useState<MonthlySummary | null>(null);
   const [lastHarvestDate, setLastHarvestDate] = useState<string | null>(null);
+  const [farmSettings, setFarmSettings] = useState<FarmSettings | null>(null);
   const [weather, setWeather] = useState<WeatherTip | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -44,15 +47,36 @@ export default function DashboardPage() {
       }
     }
 
-    load();
-    fetchWeatherTip().then((tip) => {
+    // Weather doesn't need Supabase, but if it's configured we first check
+    // for a saved farm location so the forecast is pinned to the real farm
+    // instead of the build-time default coordinates.
+    async function loadWeather() {
+      let settings: FarmSettings | null = null;
+      if (isSupabaseConfigured) {
+        try {
+          settings = await getFarmSettings();
+          if (!cancelled) setFarmSettings(settings);
+        } catch (err) {
+          console.error(err);
+        }
+      }
+      const tip = await fetchWeatherTip(settings?.farm_lat, settings?.farm_lon);
       if (!cancelled) setWeather(tip);
-    });
+    }
+
+    load();
+    loadWeather();
 
     return () => {
       cancelled = true;
     };
   }, []);
+
+  async function handleLocationSaved(settings: FarmSettings) {
+    setFarmSettings(settings);
+    const tip = await fetchWeatherTip(settings.farm_lat, settings.farm_lon);
+    setWeather(tip);
+  }
 
   const todayLabel = new Intl.DateTimeFormat("th-TH", {
     weekday: "long",
@@ -123,6 +147,9 @@ export default function DashboardPage() {
         </div>
         {weather ? (
           <Banner variant={weather.isRaining ? "warning" : "success"}>{weather.message}</Banner>
+        ) : null}
+        {isSupabaseConfigured ? (
+          <FarmLocationPrompt location={farmSettings} onSaved={handleLocationSaved} />
         ) : null}
       </section>
 

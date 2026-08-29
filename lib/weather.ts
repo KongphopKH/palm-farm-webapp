@@ -19,10 +19,18 @@ const LON = process.env.NEXT_PUBLIC_FARM_LON || "99.3215";
  * Fetches a very basic weather tip from Open-Meteo (free, no API key
  * required) and turns it into a short, actionable Thai-language suggestion
  * for the dashboard's Smart Reminders section.
+ *
+ * `lat`/`lon` (from the user-saved farm location in Supabase) override the
+ * build-time env-var defaults when provided.
  */
-export async function fetchWeatherTip(): Promise<WeatherTip> {
+export async function fetchWeatherTip(
+  lat?: number | null,
+  lon?: number | null
+): Promise<WeatherTip> {
   try {
-    const url = `https://api.open-meteo.com/v1/forecast?latitude=${LAT}&longitude=${LON}&current=temperature_2m,precipitation,rain&timezone=Asia%2FBangkok`;
+    const latitude = lat ?? LAT;
+    const longitude = lon ?? LON;
+    const url = `https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&current=temperature_2m,precipitation,rain&timezone=Asia%2FBangkok`;
     const res = await fetch(url, { cache: "no-store" });
     if (!res.ok) throw new Error("weather fetch failed");
     const data = await res.json();

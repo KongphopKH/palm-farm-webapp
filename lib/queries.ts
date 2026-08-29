@@ -1,6 +1,6 @@
 import { supabase } from "./supabase";
 import { startOfMonthISO, endOfMonthISO } from "./format";
-import type { Activity, Expense, Harvest, Plot } from "@/types";
+import type { Activity, Expense, FarmSettings, Harvest, Plot } from "@/types";
 
 // ---------- Plots ----------
 
@@ -222,4 +222,22 @@ export async function getMonthlySummary(): Promise<MonthlySummary> {
   );
 
   return { income, expense, profit: income - expense };
+}
+
+// ---------- Farm settings (location, for weather lookups) ----------
+
+export async function getFarmSettings(): Promise<FarmSettings | null> {
+  const { data, error } = await supabase.from("farm_settings").select("*").eq("id", 1).maybeSingle();
+  if (error) throw error;
+  return data ?? null;
+}
+
+export async function upsertFarmSettings(lat: number, lon: number): Promise<FarmSettings> {
+  const { data, error } = await supabase
+    .from("farm_settings")
+    .upsert({ id: 1, farm_lat: lat, farm_lon: lon, updated_at: new Date().toISOString() })
+    .select()
+    .single();
+  if (error) throw error;
+  return data as FarmSettings;
 }

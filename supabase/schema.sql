@@ -46,6 +46,15 @@ create table if not exists expenses (
   created_at timestamptz not null default now()
 );
 
+-- 5) ตำแหน่งสวน (single row) — ใช้พยากรณ์อากาศเฉพาะจุดสวนแทนค่า default ----
+create table if not exists farm_settings (
+  id integer primary key default 1,
+  farm_lat numeric(9, 6) not null,
+  farm_lon numeric(9, 6) not null,
+  updated_at timestamptz not null default now(),
+  constraint farm_settings_singleton check (id = 1)
+);
+
 -- Indexes for common queries (dashboard summaries, per-plot history) -------
 create index if not exists activities_plot_id_idx on activities (plot_id);
 create index if not exists harvests_plot_id_idx on harvests (plot_id);
@@ -61,8 +70,10 @@ alter table plots enable row level security;
 alter table activities enable row level security;
 alter table harvests enable row level security;
 alter table expenses enable row level security;
+alter table farm_settings enable row level security;
 
 create policy "Allow all for anon" on plots for all using (true) with check (true);
 create policy "Allow all for anon" on activities for all using (true) with check (true);
 create policy "Allow all for anon" on harvests for all using (true) with check (true);
 create policy "Allow all for anon" on expenses for all using (true) with check (true);
+create policy "Allow all for anon" on farm_settings for all using (true) with check (true);
