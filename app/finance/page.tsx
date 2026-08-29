@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { Download } from "lucide-react";
 import PageHeader from "@/components/PageHeader";
 import Banner from "@/components/Banner";
 import StatCard from "@/components/StatCard";
@@ -15,7 +16,8 @@ import {
   type MonthlyTrendPoint,
 } from "@/lib/queries";
 import { isSupabaseConfigured } from "@/lib/supabase";
-import { formatCurrency } from "@/lib/format";
+import { formatCurrency, todayISODate } from "@/lib/format";
+import { buildCsv, downloadCsv } from "@/lib/csv";
 import type { Expense, Harvest, Plot } from "@/types";
 
 type Tab = "income" | "expense";
@@ -71,6 +73,34 @@ export default function FinancePage() {
   const totalIncome = harvests.reduce((sum, h) => sum + Number(h.total_price ?? 0), 0);
   const totalExpense = expenses.reduce((sum, e) => sum + Number(e.amount ?? 0), 0);
 
+  const currentTabHasData = tab === "income" ? harvests.length > 0 : expenses.length > 0;
+
+  function handleExportCsv() {
+    const today = todayISODate();
+    if (tab === "income") {
+      if (harvests.length === 0) return;
+      const csv = buildCsv(
+        ["วันที่ขาย", "แปลง", "น้ำหนัก (กก.)", "ราคาต่อกก. (บาท)", "รวม (บาท)", "เลขที่ใบเสร็จ"],
+        harvests.map((h) => [
+          h.sale_date,
+          plots.find((p) => p.id === h.plot_id)?.name ?? "-",
+          h.weight_kg,
+          h.price_per_kg,
+          h.total_price,
+          h.receipt_number ?? "",
+        ])
+      );
+      downloadCsv(`palm-farm-รายรับ-${today}.csv`, csv);
+    } else {
+      if (expenses.length === 0) return;
+      const csv = buildCsv(
+        ["วันที่", "หมวดหมู่", "จำนวนเงิน (บาท)", "รายละเอียด"],
+        expenses.map((e) => [e.date, e.category, e.amount, e.description ?? ""])
+      );
+      downloadCsv(`palm-farm-รายจ่าย-${today}.csv`, csv);
+    }
+  }
+
   return (
     <div className="flex flex-1 flex-col">
       <PageHeader title="บัญชีฟาร์ม" />
@@ -105,6 +135,18 @@ export default function FinancePage() {
             รายจ่าย
           </button>
         </div>
+
+        {!loading ? (
+          <button
+            type="button"
+            onClick={handleExportCsv}
+            disabled={!currentTabHasData}
+            className="flex items-center justify-center gap-1.5 self-end rounded-xl bg-stone-100 px-3 py-2 text-xs font-bold text-stone-600 active:bg-stone-200 disabled:opacity-40"
+          >
+            <Download className="h-3.5 w-3.5" />
+            ส่งออก CSV ({tab === "income" ? "รายรับ" : "รายจ่าย"})
+          </button>
+        ) : null}
 
         {loading ? (
           <p className="py-8 text-center text-stone-400">กำลังโหลด...</p>
