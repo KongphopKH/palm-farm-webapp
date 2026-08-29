@@ -95,14 +95,15 @@ export async function fetchWeatherTip(
   }
 }
 
-interface HourlyResponse {
+export interface HourlyResponse {
   time?: string[];
   precipitation_probability?: (number | null)[];
   precipitation?: (number | null)[];
 }
 
-/** Groups today's remaining forecast hours with rain into start–end windows. */
-function parseRainWindowsToday(hourly: HourlyResponse | undefined): RainWindow[] {
+/** Groups today's remaining forecast hours with rain into start–end windows.
+ *  Exported (not just used internally) so it can be unit-tested directly. */
+export function parseRainWindowsToday(hourly: HourlyResponse | undefined): RainWindow[] {
   if (!hourly?.time) return [];
   const today = todayISODate();
   const currentHour = new Date().getHours();
@@ -135,14 +136,14 @@ function parseRainWindowsToday(hourly: HourlyResponse | undefined): RainWindow[]
   return windows;
 }
 
-interface DailyResponse {
+export interface DailyResponse {
   time?: string[];
   temperature_2m_max?: (number | null)[];
   temperature_2m_min?: (number | null)[];
   precipitation_probability_max?: (number | null)[];
 }
 
-function parseDailyForecast(daily: DailyResponse | undefined): DailyForecast[] {
+export function parseDailyForecast(daily: DailyResponse | undefined): DailyForecast[] {
   if (!daily?.time) return [];
   return daily.time.map((date, i) => {
     const probability = daily.precipitation_probability_max?.[i] ?? null;
