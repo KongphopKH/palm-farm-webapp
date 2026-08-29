@@ -6,6 +6,7 @@ import BigActionButton from "@/components/BigActionButton";
 import StatCard from "@/components/StatCard";
 import Banner from "@/components/Banner";
 import FarmLocationPrompt from "@/components/FarmLocationPrompt";
+import WeatherOutlook from "@/components/WeatherOutlook";
 import { isSupabaseConfigured } from "@/lib/supabase";
 import { getFarmSettings, getLastHarvestDate, getMonthlySummary, type MonthlySummary } from "@/lib/queries";
 import { fetchWeatherTip, type WeatherTip } from "@/lib/weather";
@@ -147,6 +148,12 @@ export default function DashboardPage() {
         </div>
         {weather ? (
           <Banner variant={weather.isRaining ? "warning" : "success"}>{weather.message}</Banner>
+        ) : null}
+        {weather ? (
+          <WeatherOutlook
+            rainWindowsToday={weather.rainWindowsToday}
+            dailyForecast={weather.dailyForecast}
+          />
         ) : null}
         {isSupabaseConfigured ? (
           <FarmLocationPrompt location={farmSettings} onSaved={handleLocationSaved} />

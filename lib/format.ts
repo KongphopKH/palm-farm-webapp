@@ -26,6 +26,15 @@ export function todayISODate(): string {
   return new Date().toISOString().slice(0, 10);
 }
 
+/** e.g. "จ. 1 ก.ย." — for the 5-day weather outlook's day cards. */
+export function formatDayLabelThai(dateString: string): string {
+  return new Intl.DateTimeFormat("th-TH", {
+    weekday: "short",
+    day: "numeric",
+    month: "short",
+  }).format(new Date(dateString));
+}
+
 export function startOfMonthISO(): string {
   const now = new Date();
   return new Date(now.getFullYear(), now.getMonth(), 1).toISOString().slice(0, 10);
