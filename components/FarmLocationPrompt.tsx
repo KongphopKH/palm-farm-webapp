@@ -1,9 +1,10 @@
 "use client";
 
-import { useState } from "react";
+import { useState, type ChangeEvent } from "react";
 import { LocateFixed, MapPin } from "lucide-react";
 import { upsertFarmSettings } from "@/lib/queries";
-import { TextField } from "@/components/FormControls";
+import { SelectField } from "@/components/FormControls";
+import { THAI_PROVINCES } from "@/lib/thai-provinces";
 import type { FarmSettings } from "@/types";
 
 interface FarmLocationPromptProps {
@@ -14,43 +15,9 @@ interface FarmLocationPromptProps {
 export default function FarmLocationPrompt({ location, onSaved }: FarmLocationPromptProps) {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [manualOpen, setManualOpen] = useState(false);
-  const [manualLat, setManualLat] = useState(location ? String(location.farm_lat) : "");
-  const [manualLon, setManualLon] = useState(location ? String(location.farm_lon) : "");
-  const [manualSaving, setManualSaving] = useState(false);
-  const [manualError, setManualError] = useState<string | null>(null);
-
-  function openManualEntry() {
-    setManualLat(location ? String(location.farm_lat) : "");
-    setManualLon(location ? String(location.farm_lon) : "");
-    setManualError(null);
-    setManualOpen(true);
-  }
-
-  async function handleManualSave() {
-    const lat = parseFloat(manualLat);
-    const lon = parseFloat(manualLon);
-    if (Number.isNaN(lat) || lat < -90 || lat > 90) {
-      setManualError("กรุณากรอกละติจูดให้ถูกต้อง (-90 ถึง 90)");
-      return;
-    }
-    if (Number.isNaN(lon) || lon < -180 || lon > 180) {
-      setManualError("กรุณากรอกลองจิจูดให้ถูกต้อง (-180 ถึง 180)");
-      return;
-    }
-    setManualSaving(true);
-    setManualError(null);
-    try {
-      const settings = await upsertFarmSettings(lat, lon);
-      onSaved(settings);
-      setManualOpen(false);
-    } catch (err) {
-      console.error(err);
-      setManualError("บันทึกตำแหน่งไม่สำเร็จ กรุณาลองใหม่อีกครั้ง");
-    } finally {
-      setManualSaving(false);
-    }
-  }
+  const [pickerOpen, setPickerOpen] = useState(false);
+  const [provinceSaving, setProvinceSaving] = useState(false);
+  const [provinceError, setProvinceError] = useState<string | null>(null);
 
   function handleUseCurrentLocation() {
     if (typeof navigator === "undefined" || !("geolocation" in navigator)) {
@@ -87,6 +54,24 @@ export default function FarmLocationPrompt({ location, onSaved }: FarmLocationPr
     );
   }
 
+  async function handleProvinceSelect(e: ChangeEvent<HTMLSelectElement>) {
+    const province = THAI_PROVINCES.find((p) => p.name === e.target.value);
+    if (!province) return;
+
+    setProvinceSaving(true);
+    setProvinceError(null);
+    try {
+      const settings = await upsertFarmSettings(province.lat, province.lon);
+      onSaved(settings);
+      setPickerOpen(false);
+    } catch (err) {
+      console.error(err);
+      setProvinceError("บันทึกตำแหน่งไม่สำเร็จ กรุณาลองใหม่อีกครั้ง");
+    } finally {
+      setProvinceSaving(false);
+    }
+  }
+
   return (
     <div className="flex flex-col gap-3 rounded-2xl bg-white p-4 shadow-sm ring-1 ring-stone-200">
       <div className="flex items-center gap-3">
@@ -115,57 +100,41 @@ export default function FarmLocationPrompt({ location, onSaved }: FarmLocationPr
         </button>
       </div>
 
-      {!manualOpen ? (
+      {!pickerOpen ? (
         <button
           type="button"
-          onClick={openManualEntry}
+          onClick={() => setPickerOpen(true)}
           className="self-start text-xs font-semibold text-stone-500 underline decoration-stone-300 underline-offset-2 active:text-stone-700"
         >
-          ไม่ได้อยู่ที่สวนตอนนี้? กรอกพิกัดเอง
+          ไม่ได้อยู่ที่สวนตอนนี้? เลือกจังหวัดแทน
         </button>
       ) : (
-        <div className="flex flex-col gap-3 border-t border-stone-100 pt-3">
-          <p className="text-xs leading-relaxed text-stone-500">
-            💡 หาพิกัดสวนได้จาก Google Maps: กดค้างที่ตำแหน่งสวนบนแผนที่ แล้วคัดลอกตัวเลขสองชุดที่ขึ้นมา
-            (เช่น 9.1382, 99.3215) มาใส่ด้านล่างนี้
-          </p>
-          <div className="grid grid-cols-2 gap-3">
-            <TextField
-              label="ละติจูด (Lat)"
-              type="number"
-              inputMode="decimal"
-              step="0.0001"
-              value={manualLat}
-              onChange={(e) => setManualLat(e.target.value)}
-            />
-            <TextField
-              label="ลองจิจูด (Lon)"
-              type="number"
-              inputMode="decimal"
-              step="0.0001"
-              value={manualLon}
-              onChange={(e) => setManualLon(e.target.value)}
-            />
-          </div>
-          {manualError ? <p className="text-xs font-medium text-red-600">{manualError}</p> : null}
-          <div className="flex gap-2">
-            <button
-              type="button"
-              onClick={handleManualSave}
-              disabled={manualSaving}
-              className="flex-1 rounded-xl bg-blue-600 py-2.5 text-sm font-bold text-white active:bg-blue-700 disabled:opacity-60"
-            >
-              {manualSaving ? "กำลังบันทึก..." : "บันทึกพิกัด"}
-            </button>
-            <button
-              type="button"
-              onClick={() => setManualOpen(false)}
-              disabled={manualSaving}
-              className="rounded-xl bg-stone-100 px-4 py-2.5 text-sm font-bold text-stone-600 active:bg-stone-200"
-            >
-              ยกเลิก
-            </button>
-          </div>
+        <div className="flex flex-col gap-2 border-t border-stone-100 pt-3">
+          <SelectField
+            label="จังหวัดที่ตั้งสวน"
+            defaultValue=""
+            disabled={provinceSaving}
+            onChange={handleProvinceSelect}
+          >
+            <option value="" disabled>
+              เลือกจังหวัด
+            </option>
+            {THAI_PROVINCES.map((p) => (
+              <option key={p.name} value={p.name}>
+                {p.name}
+              </option>
+            ))}
+          </SelectField>
+          {provinceSaving ? <p className="text-xs text-stone-400">กำลังบันทึก...</p> : null}
+          {provinceError ? <p className="text-xs font-medium text-red-600">{provinceError}</p> : null}
+          <button
+            type="button"
+            onClick={() => setPickerOpen(false)}
+            disabled={provinceSaving}
+            className="self-start text-xs font-semibold text-stone-500 active:text-stone-700"
+          >
+            ยกเลิก
+          </button>
         </div>
       )}
     </div>
