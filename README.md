@@ -16,10 +16,7 @@ CI/CD (GitHub Actions), ไปจนถึง automated testing (Vitest)
   แล้วนำไฟล์ไปวางในโฟลเดอร์ docs/screenshots/ ตามชื่อด้านล่างนี้ — พอวางไฟล์ครบ
   รูปจะขึ้นในหน้า README บน GitHub เองอัตโนมัติ ไม่ต้องแก้อะไรเพิ่ม
 -->
-
-| หน้าแรก | ปฏิทินกิจกรรม | บัญชีฟาร์ม |
-|---|---|---|
-| ![หน้าแรก](docs/screenshots/dashboard.png) | ![ปฏิทิน](docs/screenshots/calendar.png) | ![บัญชีฟาร์ม](docs/screenshots/finance.png) |
+<img width="430" height="906" alt="image" src="https://github.com/user-attachments/assets/60cb3f15-31c9-4049-9d1f-5bac342e0c50" />
 
 ## ฟีเจอร์หลัก
 
