@@ -6,7 +6,7 @@
 ทำตั้งแต่ frontend, backend(Supabase),
 CI/CD (GitHub Actions), ไปจนถึง automated testing (Vitest)
 
-**🔗 Live demo:** [https://kongphopkh.github.io/palm-farm-webapp/]
+<!--**🔗 Live demo:** [https://kongphopkh.github.io/palm-farm-webapp/]-->
 <!-- TODO: แก้ลิงก์ด้านบนเป็น URL จริงหลัง deploy (รูปแบบ https://<username>.github.io/palm-farm-webapp/) -->
 
 ## สกรีนช็อต
