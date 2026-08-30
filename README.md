@@ -192,7 +192,7 @@ GitHub Pages** ให้อัตโนมัติ
 - ธีมสีใช้โทนสว่าง (light theme) ตัวหนังสือ/ปุ่มขนาดใหญ่ตลอดทั้งแอป โดยตั้งใจไม่ตาม
   dark mode ของระบบ เพื่อความคงที่และอ่านง่ายสำหรับผู้ใหญ่
 
-## แนวทางต่อยอด (ยังไม่ได้ทำ)
+## แนวทางต่อยอด 
 
 - Yield analytics — วิเคราะห์ผลผลิตต่อไร่/ต่อต้น
-- PWA offline caching (มี `manifest.json` แล้ว ยังไม่มี service worker จริง)
+- PWA offline caching (มี `manifest.json` แล้ว ยังไม่มี service worker จริง) (ยังไม่ได้ทำ)
