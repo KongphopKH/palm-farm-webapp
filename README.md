@@ -16,7 +16,8 @@ CI/CD (GitHub Actions), ไปจนถึง automated testing (Vitest)
   แล้วนำไฟล์ไปวางในโฟลเดอร์ docs/screenshots/ ตามชื่อด้านล่างนี้ — พอวางไฟล์ครบ
   รูปจะขึ้นในหน้า README บน GitHub เองอัตโนมัติ ไม่ต้องแก้อะไรเพิ่ม
 -->
-<img width="430" height="906" alt="image" src="https://github.com/user-attachments/assets/60cb3f15-31c9-4049-9d1f-5bac342e0c50" />
+<img width="434" height="900" alt="palm app" src="https://github.com/user-attachments/assets/5a5e8950-46f0-413b-95e0-dc21076f9cb1" />
+
 
 ## ฟีเจอร์หลัก
 
