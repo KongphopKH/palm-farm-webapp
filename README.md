@@ -58,7 +58,7 @@ CI/CD (GitHub Actions), ไปจนถึง automated testing (Vitest)
 | Testing | Vitest |
 | Deploy / CI | GitHub Actions → GitHub Pages |
 
-## จุดที่น่าสนใจทางเทคนิค
+<!--## จุดที่น่าสนใจทางเทคนิค
 
 โปรเจกต์นี้เจอปัญหาจริงระหว่างพัฒนาหลายอย่างที่ต้องแก้ด้วยความเข้าใจ ไม่ใช่แค่ลองผิด
 ลองถูก:
@@ -80,7 +80,7 @@ CI/CD (GitHub Actions), ไปจนถึง automated testing (Vitest)
   ไม่มี `window`/DOM จริง และใช้ `L.circleMarker` แทน `L.marker` เพื่อเลี่ยงบั๊กไอคอนหมุด
   default ที่มักพังใต้ bundler สมัยใหม่
 - **CI รัน automated tests ก่อน build ทุกครั้ง** — [`.github/workflows/deploy.yml`](.github/workflows/deploy.yml)
-  รัน `npm test` ก่อนขั้นตอน build เสมอ ถ้าเทสต์พังจะไม่ deploy โค้ดที่มีบั๊กขึ้นเว็บจริง
+  รัน `npm test` ก่อนขั้นตอน build เสมอ ถ้าเทสต์พังจะไม่ deploy โค้ดที่มีบั๊กขึ้นเว็บจริง -->
 
 ## โครงสร้างโปรเจกต์
 
