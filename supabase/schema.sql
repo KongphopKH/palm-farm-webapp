@@ -10,6 +10,7 @@ create table if not exists plots (
   crop_type text not null default 'oil_palm',
   amount integer not null default 0,        -- จำนวนต้น
   area_size numeric(10, 2) not null default 0, -- ขนาดพื้นที่ (ไร่)
+  planted_date date,                        -- วันที่ปลูก (ไม่บังคับ) ใช้คำนวณอายุต้นปาล์ม
   created_at timestamptz not null default now()
 );
 

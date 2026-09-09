@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { Check, Pencil, Trash2, X } from "lucide-react";
-import { formatNumber } from "@/lib/format";
+import { formatNumber, formatPlantAge } from "@/lib/format";
 import { deletePlot, updatePlot } from "@/lib/queries";
 import { TextField } from "@/components/FormControls";
 import type { Plot } from "@/types";
@@ -17,6 +17,7 @@ export default function PlotCard({ plot, onChanged }: PlotCardProps) {
   const [name, setName] = useState(plot.name);
   const [amount, setAmount] = useState(String(plot.amount));
   const [areaSize, setAreaSize] = useState(String(plot.area_size));
+  const [plantedDate, setPlantedDate] = useState(plot.planted_date ?? "");
   const [saving, setSaving] = useState(false);
   const [deleting, setDeleting] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -25,6 +26,7 @@ export default function PlotCard({ plot, onChanged }: PlotCardProps) {
     setName(plot.name);
     setAmount(String(plot.amount));
     setAreaSize(String(plot.area_size));
+    setPlantedDate(plot.planted_date ?? "");
     setError(null);
     setEditing(true);
   }
@@ -43,6 +45,7 @@ export default function PlotCard({ plot, onChanged }: PlotCardProps) {
         name: name.trim(),
         amount: Number.isNaN(amt) ? 0 : amt,
         area_size: Number.isNaN(area) ? 0 : area,
+        planted_date: plantedDate || null,
       });
       setEditing(false);
       onChanged();
@@ -97,6 +100,12 @@ export default function PlotCard({ plot, onChanged }: PlotCardProps) {
           min="0"
           value={areaSize}
           onChange={(e) => setAreaSize(e.target.value)}
+        />
+        <TextField
+          label="วันที่ปลูก"
+          type="date"
+          value={plantedDate}
+          onChange={(e) => setPlantedDate(e.target.value)}
         />
         <div className="flex gap-2">
           <button
@@ -158,6 +167,12 @@ export default function PlotCard({ plot, onChanged }: PlotCardProps) {
         <div>
           <p className="text-xs text-stone-500">ขนาดพื้นที่</p>
           <p className="text-xl font-bold text-stone-800">{formatNumber(plot.area_size, 2)} ไร่</p>
+        </div>
+        <div className="col-span-2">
+          <p className="text-xs text-stone-500">อายุต้นปาล์ม</p>
+          <p className="text-xl font-bold text-stone-800">
+            {plot.planted_date ? formatPlantAge(plot.planted_date) : "ยังไม่ระบุวันที่ปลูก"}
+          </p>
         </div>
       </div>
     </div>

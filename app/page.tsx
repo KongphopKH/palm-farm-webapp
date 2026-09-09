@@ -9,16 +9,23 @@ import FarmLocationPrompt from "@/components/FarmLocationPrompt";
 import WeatherOutlook from "@/components/WeatherOutlook";
 import RainWindowNotice from "@/components/RainWindowNotice";
 import { isSupabaseConfigured } from "@/lib/supabase";
-import { getFarmSettings, getLastHarvestDate, getMonthlySummary, type MonthlySummary } from "@/lib/queries";
+import {
+  getFarmSettings,
+  getLastHarvestDate,
+  getMonthlySummary,
+  getPlots,
+  type MonthlySummary,
+} from "@/lib/queries";
 import { fetchWeatherTip, type WeatherTip } from "@/lib/weather";
-import { daysFromToday, formatCurrency } from "@/lib/format";
+import { daysFromToday, formatCurrency, getPlantAgeReminders } from "@/lib/format";
 import { HARVEST_CYCLE_DAYS } from "@/lib/constants";
-import type { FarmSettings } from "@/types";
+import type { FarmSettings, Plot } from "@/types";
 
 export default function DashboardPage() {
   const [summary, setSummary] = useState<MonthlySummary | null>(null);
   const [lastHarvestDate, setLastHarvestDate] = useState<string | null>(null);
   const [farmSettings, setFarmSettings] = useState<FarmSettings | null>(null);
+  const [plots, setPlots] = useState<Plot[]>([]);
   const [weather, setWeather] = useState<WeatherTip | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -33,13 +40,15 @@ export default function DashboardPage() {
         return;
       }
       try {
-        const [summaryData, lastHarvest] = await Promise.all([
+        const [summaryData, lastHarvest, plotsData] = await Promise.all([
           getMonthlySummary(),
           getLastHarvestDate(),
+          getPlots(),
         ]);
         if (cancelled) return;
         setSummary(summaryData);
         setLastHarvestDate(lastHarvest);
+        setPlots(plotsData);
       } catch (err) {
         if (!cancelled) {
           console.error(err);
@@ -94,6 +103,12 @@ export default function DashboardPage() {
     harvestCountdownLabel =
       daysLeft > 0 ? `อีกประมาณ ${daysLeft} วัน` : "ถึงกำหนดรอบตัดแล้ว";
   }
+
+  // Age-based reminders (ใกล้เริ่มให้ผลผลิต / ควรวางแผนปลูกทดแทน) — เงียบไปเองถ้า
+  // แปลงไหนยังไม่ได้ระบุวันที่ปลูก หรือยังไม่เข้าเงื่อนไขไหนเลย
+  const plantAgeReminders = plots.flatMap((plot) =>
+    getPlantAgeReminders(plot.name, plot.planted_date)
+  );
 
   return (
     <div className="flex flex-1 flex-col gap-5 px-4 pb-6 pt-5">
@@ -173,6 +188,14 @@ export default function DashboardPage() {
             <p className="text-lg font-bold text-stone-800">{harvestCountdownLabel}</p>
           </div>
         </div>
+        {plantAgeReminders.map((reminder) => (
+          <Banner
+            key={`${reminder.type}-${reminder.message}`}
+            variant={reminder.type === "replant" ? "warning" : "success"}
+          >
+            {reminder.message}
+          </Banner>
+        ))}
         {weather ? (
           <Banner variant={weather.isRaining ? "warning" : "success"}>{weather.message}</Banner>
         ) : null}

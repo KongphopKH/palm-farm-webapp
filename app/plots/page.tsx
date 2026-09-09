@@ -19,6 +19,7 @@ export default function PlotsPage() {
   const [name, setName] = useState("");
   const [amount, setAmount] = useState("");
   const [areaSize, setAreaSize] = useState("");
+  const [plantedDate, setPlantedDate] = useState("");
   const [submitting, setSubmitting] = useState(false);
 
   // Used to refresh the list after adding a plot (not tied to the initial
@@ -75,10 +76,12 @@ export default function PlotsPage() {
         crop_type: "oil_palm",
         amount: Number.isNaN(amt) ? 0 : amt,
         area_size: Number.isNaN(area) ? 0 : area,
+        planted_date: plantedDate || null,
       });
       setName("");
       setAmount("");
       setAreaSize("");
+      setPlantedDate("");
       setShowForm(false);
       await refreshPlots();
     } catch (err) {
@@ -135,6 +138,12 @@ export default function PlotsPage() {
               min="0"
               value={areaSize}
               onChange={(e) => setAreaSize(e.target.value)}
+            />
+            <TextField
+              label="วันที่ปลูก (ถ้าทราบ)"
+              type="date"
+              value={plantedDate}
+              onChange={(e) => setPlantedDate(e.target.value)}
             />
             <SubmitButton loading={submitting}>บันทึกแปลง</SubmitButton>
           </form>

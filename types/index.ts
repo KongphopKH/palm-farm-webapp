@@ -6,6 +6,7 @@ export interface Plot {
   crop_type: CropType;
   amount: number; // จำนวนต้น
   area_size: number; // ขนาดพื้นที่ (ไร่)
+  planted_date: string | null; // วันที่ปลูก (ISO date) — ใช้คำนวณอายุต้นปาล์ม
   created_at?: string;
 }
 

@@ -6,7 +6,10 @@ import {
   formatDayLabelThai,
   formatMonthYearThai,
   formatNumber,
+  formatPlantAge,
   getMonthMatrix,
+  getPlantAgeReminders,
+  getPlantAgeYears,
   monthRangeISO,
 } from "./format";
 
@@ -122,5 +125,73 @@ describe("getMonthMatrix", () => {
     for (const week of weeks) {
       expect(week).toHaveLength(7);
     }
+  });
+});
+
+describe("formatPlantAge / getPlantAgeYears", () => {
+  beforeEach(() => {
+    vi.useFakeTimers();
+    vi.setSystemTime(new Date(2026, 7, 25)); // "today" = August 25, 2026
+  });
+
+  afterEach(() => {
+    vi.useRealTimers();
+  });
+
+  it("formats whole years + remainder months", () => {
+    expect(formatPlantAge("2022-05-25")).toBe("4 ปี 3 เดือน");
+  });
+
+  it("formats under a year as months only", () => {
+    expect(formatPlantAge("2025-12-25")).toBe("8 เดือน");
+  });
+
+  it("omits the months part on an exact-year anniversary", () => {
+    expect(formatPlantAge("2021-08-25")).toBe("5 ปี");
+  });
+
+  it("computes a fractional-year age", () => {
+    expect(getPlantAgeYears("2024-02-25")).toBeCloseTo(2.5, 5);
+  });
+});
+
+describe("getPlantAgeReminders", () => {
+  beforeEach(() => {
+    vi.useFakeTimers();
+    vi.setSystemTime(new Date(2026, 7, 25)); // "today" = August 25, 2026
+  });
+
+  afterEach(() => {
+    vi.useRealTimers();
+  });
+
+  it("returns nothing when no planting date is set", () => {
+    expect(getPlantAgeReminders("แปลง A", null)).toEqual([]);
+  });
+
+  it("returns nothing for a young plot far from either threshold", () => {
+    expect(getPlantAgeReminders("แปลง A", "2025-08-25")).toEqual([]); // 1 ปี
+  });
+
+  it("warns about upcoming fruiting within the lookahead window", () => {
+    const reminders = getPlantAgeReminders("แปลง A", "2024-01-25"); // 2 ปี 7 เดือน
+    expect(reminders).toHaveLength(1);
+    expect(reminders[0].type).toBe("fruiting-soon");
+    expect(reminders[0].message).toContain("5 เดือน");
+  });
+
+  it("stops the fruiting reminder right at the 3-year mark", () => {
+    expect(getPlantAgeReminders("แปลง A", "2023-08-25")).toEqual([]); // 3 ปี พอดี
+  });
+
+  it("does not warn to replant just under 20 years", () => {
+    expect(getPlantAgeReminders("แปลง A", "2006-09-25")).toEqual([]); // ~19 ปี 11 เดือน
+  });
+
+  it("warns to replant from 20 years onward", () => {
+    const reminders = getPlantAgeReminders("แปลง A", "2006-08-25"); // 20 ปี พอดี
+    expect(reminders).toHaveLength(1);
+    expect(reminders[0].type).toBe("replant");
+    expect(reminders[0].message).toContain("20 ปี");
   });
 });

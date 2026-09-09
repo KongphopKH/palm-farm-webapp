@@ -38,3 +38,12 @@ export const ACTIVITY_ICONS: Record<string, string> = {
 export const DEFAULT_ACTIVITY_ICON = "📌";
 export const HARVEST_ICON = "🟠";
 export const EXPENSE_ICON = "💸";
+
+/**
+ * ค่าเฉลี่ยวงจรชีวิตปาล์มน้ำมัน ใช้เป็นเกณฑ์แจ้งเตือนใน Smart Reminders — ต้นปาล์ม
+ * ทั่วไปเริ่มให้ผลผลิตราวปีที่ 3 และควรเริ่มวางแผนปลูกทดแทนเมื่ออายุราว 20-25 ปี
+ * (ผลผลิตเริ่มลดลง) ใช้ 20 เป็นจุดเริ่มแจ้งเตือนเพราะเป็นขอบล่างของช่วงนั้น
+ */
+export const PALM_FRUITING_AGE_YEARS = 3;
+export const PALM_FRUITING_WARNING_MONTHS = 6; // แจ้งเตือนล่วงหน้าก่อนถึงปีที่ 3 กี่เดือน
+export const PALM_REPLANT_WARNING_AGE_YEARS = 20;
