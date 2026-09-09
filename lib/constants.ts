@@ -46,4 +46,19 @@ export const EXPENSE_ICON = "💸";
  */
 export const PALM_FRUITING_AGE_YEARS = 3;
 export const PALM_FRUITING_WARNING_MONTHS = 6; // แจ้งเตือนล่วงหน้าก่อนถึงปีที่ 3 กี่เดือน
-export const PALM_REPLANT_WARNING_AGE_YEARS = 20;
+export const PALM_REPLANT_WARNING_AGE_YEARS = 20; // เริ่ม "ควรวางแผน" ไว้ก่อนช่วงผลผลิตลดจริง (25 ปี)
+
+/**
+ * ช่วงการเจริญเติบโตของต้นปาล์มน้ำมันตามอายุ ใช้แสดงเป็น insight บนการ์ดแปลง —
+ * เรียงจากอายุน้อยไปมาก แต่ละช่วงมีผลตั้งแต่ minYears จนถึงก่อนช่วงถัดไป
+ * ตัวเลข 0/4/8/18/25 มาจากผู้ใช้ ส่วน 3 (เริ่มให้ผลผลิต) และ 18 (เริ่มทรงตัว/ลดลง)
+ * เป็นช่วงคั่นกลางที่เติมให้ครอบคลุมทุกอายุแบบไม่มีช่องว่าง — ปรับได้ถ้าไม่ตรงกับพันธุ์จริง
+ */
+export const PALM_GROWTH_STAGES = [
+  { minYears: 0, key: "immature", label: "ยังไม่ให้ผลผลิต" },
+  { minYears: 3, key: "just-bearing", label: "เริ่มให้ผลผลิต" },
+  { minYears: 4, key: "increasing-yield", label: "กำลังเข้าสู่ช่วงให้ผลผลิตดี" },
+  { minYears: 8, key: "peak-yield", label: "ช่วงผลผลิตสูงสุด" },
+  { minYears: 18, key: "leveling-off", label: "ผลผลิตเริ่มทรงตัว" },
+  { minYears: 25, key: "declining", label: "ผลผลิตเริ่มลด ควรพิจารณาปลูกทดแทน" },
+] as const;

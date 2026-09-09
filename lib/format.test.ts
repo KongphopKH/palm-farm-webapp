@@ -10,6 +10,7 @@ import {
   getMonthMatrix,
   getPlantAgeReminders,
   getPlantAgeYears,
+  getPlantGrowthStage,
   monthRangeISO,
 } from "./format";
 
@@ -152,6 +153,44 @@ describe("formatPlantAge / getPlantAgeYears", () => {
 
   it("computes a fractional-year age", () => {
     expect(getPlantAgeYears("2024-02-25")).toBeCloseTo(2.5, 5);
+  });
+});
+
+describe("getPlantGrowthStage", () => {
+  it("is immature just under 3 years", () => {
+    expect(getPlantGrowthStage(2.9).key).toBe("immature");
+  });
+
+  it("just starts bearing at exactly 3 years", () => {
+    expect(getPlantGrowthStage(3).key).toBe("just-bearing");
+  });
+
+  it("stays just-bearing right up to 4 years", () => {
+    expect(getPlantGrowthStage(3.9).key).toBe("just-bearing");
+  });
+
+  it("enters increasing-yield at exactly 4 years", () => {
+    expect(getPlantGrowthStage(4).key).toBe("increasing-yield");
+  });
+
+  it("reaches peak-yield at exactly 8 years", () => {
+    expect(getPlantGrowthStage(8).key).toBe("peak-yield");
+  });
+
+  it("stays peak-yield right up to 18 years", () => {
+    expect(getPlantGrowthStage(17.9).key).toBe("peak-yield");
+  });
+
+  it("levels off at exactly 18 years", () => {
+    expect(getPlantGrowthStage(18).key).toBe("leveling-off");
+  });
+
+  it("declines at exactly 25 years", () => {
+    expect(getPlantGrowthStage(25).key).toBe("declining");
+  });
+
+  it("stays declining well past 25 years", () => {
+    expect(getPlantGrowthStage(40).key).toBe("declining");
   });
 });
 

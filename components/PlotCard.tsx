@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { Check, Pencil, Trash2, X } from "lucide-react";
-import { formatNumber, formatPlantAge } from "@/lib/format";
+import { formatNumber, formatPlantAge, getPlantAgeYears, getPlantGrowthStage } from "@/lib/format";
 import { deletePlot, updatePlot } from "@/lib/queries";
 import { TextField } from "@/components/FormControls";
 import type { Plot } from "@/types";
@@ -170,9 +170,16 @@ export default function PlotCard({ plot, onChanged }: PlotCardProps) {
         </div>
         <div className="col-span-2">
           <p className="text-xs text-stone-500">อายุต้นปาล์ม</p>
-          <p className="text-xl font-bold text-stone-800">
-            {plot.planted_date ? formatPlantAge(plot.planted_date) : "ยังไม่ระบุวันที่ปลูก"}
-          </p>
+          {plot.planted_date ? (
+            <>
+              <p className="text-xl font-bold text-stone-800">{formatPlantAge(plot.planted_date)}</p>
+              <p className="text-sm font-medium text-stone-500">
+                {getPlantGrowthStage(getPlantAgeYears(plot.planted_date)).label}
+              </p>
+            </>
+          ) : (
+            <p className="text-xl font-bold text-stone-800">ยังไม่ระบุวันที่ปลูก</p>
+          )}
         </div>
       </div>
     </div>

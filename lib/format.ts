@@ -1,6 +1,7 @@
 import {
   PALM_FRUITING_AGE_YEARS,
   PALM_FRUITING_WARNING_MONTHS,
+  PALM_GROWTH_STAGES,
   PALM_REPLANT_WARNING_AGE_YEARS,
 } from "./constants";
 
@@ -120,6 +121,16 @@ export function formatPlantAge(plantedDate: string): string {
   const { years, months } = plantAgeParts(plantedDate);
   if (years <= 0) return `${months} เดือน`;
   return months > 0 ? `${years} ปี ${months} เดือน` : `${years} ปี`;
+}
+
+/** ช่วงการเจริญเติบโตของต้นปาล์ม ณ อายุที่กำหนด — เลือกช่วงล่าสุดใน
+ *  PALM_GROWTH_STAGES ที่ minYears <= อายุ (ปี) */
+export function getPlantGrowthStage(ageYears: number): { key: string; label: string } {
+  let current: { key: string; label: string } = PALM_GROWTH_STAGES[0];
+  for (const stage of PALM_GROWTH_STAGES) {
+    if (ageYears >= stage.minYears) current = stage;
+  }
+  return current;
 }
 
 export interface PlantAgeReminder {
