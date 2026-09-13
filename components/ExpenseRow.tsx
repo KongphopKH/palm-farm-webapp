@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Check, Pencil, Trash2, X } from "lucide-react";
+import { Check, Pencil, ReceiptText, Trash2, X } from "lucide-react";
 import { formatCurrency, formatDateThai } from "@/lib/format";
 import { deleteExpense, updateExpense } from "@/lib/queries";
 import { EXPENSE_CATEGORIES } from "@/lib/constants";
@@ -127,6 +127,9 @@ export default function ExpenseRow({ expense, onChanged }: ExpenseRowProps) {
 
   return (
     <div className="flex items-center gap-3 rounded-2xl bg-white p-4 shadow-sm ring-1 ring-stone-200">
+      <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-red-600/10 text-red-600">
+        <ReceiptText className="h-5 w-5" />
+      </span>
       <div className="min-w-0 flex-1">
         <p className="truncate text-xs text-stone-500">
           {formatDateThai(expense.date)} · {expense.category}

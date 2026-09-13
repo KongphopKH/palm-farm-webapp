@@ -1,3 +1,4 @@
+import { Cloud, CloudRain, Sun } from "lucide-react";
 import { formatDayLabelThai } from "@/lib/format";
 import type { DailyForecast } from "@/lib/weather";
 
@@ -5,10 +6,10 @@ interface WeatherOutlookProps {
   dailyForecast: DailyForecast[];
 }
 
-function dayIcon(day: DailyForecast): string {
-  if (day.willRain) return "🌧️";
-  if ((day.precipitationProbability ?? 0) >= 20) return "⛅";
-  return "☀️";
+function DayIcon({ day }: { day: DailyForecast }) {
+  if (day.willRain) return <CloudRain className="h-5 w-5 text-blue-500" />;
+  if ((day.precipitationProbability ?? 0) >= 20) return <Cloud className="h-5 w-5 text-stone-400" />;
+  return <Sun className="h-5 w-5 text-amber-500" />;
 }
 
 /** 5-day forecast strip — secondary info, shown inside the collapsible
@@ -30,7 +31,7 @@ export default function WeatherOutlook({ dailyForecast }: WeatherOutlookProps) {
             <span className="text-xs font-semibold text-stone-500">
               {i === 0 ? "พรุ่งนี้" : formatDayLabelThai(day.date)}
             </span>
-            <span className="text-xl">{dayIcon(day)}</span>
+            <DayIcon day={day} />
             <span className="text-xs font-bold text-stone-700">
               {day.tempMax != null ? Math.round(day.tempMax) : "-"}°/
               {day.tempMin != null ? Math.round(day.tempMin) : "-"}°

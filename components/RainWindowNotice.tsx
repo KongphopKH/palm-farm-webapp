@@ -1,3 +1,4 @@
+import { CloudRain } from "lucide-react";
 import type { RainWindow } from "@/lib/weather";
 
 function formatHour(hour: number): string {
@@ -16,8 +17,9 @@ export default function RainWindowNotice({ windows }: { windows: RainWindow[] })
   if (windows.length === 0) return null;
 
   return (
-    <p className="rounded-2xl bg-blue-50 px-4 py-3 text-sm font-bold text-blue-700 ring-1 ring-blue-200">
-      🌧️ คาดว่าฝนจะตกช่วง {formatRainWindows(windows)} น.
+    <p className="flex items-center gap-2 rounded-2xl bg-blue-50 px-4 py-3 text-sm font-bold text-blue-700 ring-1 ring-blue-200">
+      <CloudRain className="h-4 w-4 shrink-0" />
+      คาดว่าฝนจะตกช่วง {formatRainWindows(windows)} น.
     </p>
   );
 }

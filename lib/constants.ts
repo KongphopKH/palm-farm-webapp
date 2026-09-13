@@ -54,11 +54,56 @@ export const PALM_REPLANT_WARNING_AGE_YEARS = 20; // เริ่ม "ควร�
  * ตัวเลข 0/4/8/18/25 มาจากผู้ใช้ ส่วน 3 (เริ่มให้ผลผลิต) และ 18 (เริ่มทรงตัว/ลดลง)
  * เป็นช่วงคั่นกลางที่เติมให้ครอบคลุมทุกอายุแบบไม่มีช่องว่าง — ปรับได้ถ้าไม่ตรงกับพันธุ์จริง
  */
+// text/bg/border — Tailwind classes for the colored growth-stage strip on
+// each plot card (PlotCard.tsx), going from neutral (not yet productive)
+// through green (productive) to amber/red (declining, needs replanting).
 export const PALM_GROWTH_STAGES = [
-  { minYears: 0, key: "immature", label: "ยังไม่ให้ผลผลิต" },
-  { minYears: 3, key: "just-bearing", label: "เริ่มให้ผลผลิต" },
-  { minYears: 4, key: "increasing-yield", label: "กำลังเข้าสู่ช่วงให้ผลผลิตดี" },
-  { minYears: 8, key: "peak-yield", label: "ช่วงผลผลิตสูงสุด" },
-  { minYears: 18, key: "leveling-off", label: "ผลผลิตเริ่มทรงตัว" },
-  { minYears: 25, key: "declining", label: "ผลผลิตเริ่มลด ควรพิจารณาปลูกทดแทน" },
+  {
+    minYears: 0,
+    key: "immature",
+    label: "ยังไม่ให้ผลผลิต",
+    text: "text-stone-500",
+    bg: "bg-stone-100",
+    border: "border-stone-300",
+  },
+  {
+    minYears: 3,
+    key: "just-bearing",
+    label: "เริ่มให้ผลผลิต",
+    text: "text-accent",
+    bg: "bg-accent/10",
+    border: "border-accent",
+  },
+  {
+    minYears: 4,
+    key: "increasing-yield",
+    label: "กำลังเข้าสู่ช่วงให้ผลผลิตดี",
+    text: "text-primary",
+    bg: "bg-primary/10",
+    border: "border-primary/50",
+  },
+  {
+    minYears: 8,
+    key: "peak-yield",
+    label: "ช่วงผลผลิตสูงสุด",
+    text: "text-primary",
+    bg: "bg-primary/15",
+    border: "border-primary",
+  },
+  {
+    minYears: 18,
+    key: "leveling-off",
+    label: "ผลผลิตเริ่มทรงตัว",
+    text: "text-amber-700",
+    bg: "bg-amber-50",
+    border: "border-amber-400",
+  },
+  {
+    minYears: 25,
+    key: "declining",
+    label: "ผลผลิตเริ่มลด ควรพิจารณาปลูกทดแทน",
+    text: "text-red-700",
+    bg: "bg-red-50",
+    border: "border-red-400",
+  },
 ] as const;

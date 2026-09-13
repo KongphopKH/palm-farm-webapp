@@ -76,3 +76,49 @@ export function TextAreaField({ label, className = "", ...props }: TextAreaField
     </FieldWrapper>
   );
 }
+
+interface CategoryChipsProps {
+  label: string;
+  options: readonly string[];
+  value: string;
+  onChange: (value: string) => void;
+  /** Full Tailwind classes for the selected chip, e.g. "bg-blue-600 text-white". */
+  activeClassName?: string;
+}
+
+/**
+ * Pill-style single-select category picker — used in place of a native
+ * <select> on the "new entry" forms, matching the Figma reference's chip
+ * pattern (bigger touch targets than a dropdown, and the current choice is
+ * visible at a glance instead of hidden inside a closed select).
+ */
+export function CategoryChips({
+  label,
+  options,
+  value,
+  onChange,
+  activeClassName = "bg-primary text-white",
+}: CategoryChipsProps) {
+  return (
+    <div>
+      <span className="mb-1.5 block text-sm font-semibold text-stone-600">{label}</span>
+      <div className="flex flex-wrap gap-2">
+        {options.map((option) => {
+          const active = option === value;
+          return (
+            <button
+              key={option}
+              type="button"
+              onClick={() => onChange(option)}
+              className={`rounded-full px-4 py-2 text-sm font-semibold transition ${
+                active ? activeClassName : "bg-stone-100 text-stone-600 active:bg-stone-200"
+              }`}
+            >
+              {option}
+            </button>
+          );
+        })}
+      </div>
+    </div>
+  );
+}

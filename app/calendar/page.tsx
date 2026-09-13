@@ -22,10 +22,25 @@ import {
   monthRangeISO,
   todayISODate,
 } from "@/lib/format";
-import { ACTIVITY_ICONS, DEFAULT_ACTIVITY_ICON, EXPENSE_ICON, HARVEST_ICON } from "@/lib/constants";
 import type { Activity, Expense, Harvest, Plot } from "@/types";
 
 const WEEKDAY_LABELS = ["อา", "จ", "อ", "พ", "พฤ", "ศ", "ส"];
+
+type EntryCategory = "activity" | "harvest" | "expense";
+
+const CATEGORY_LABEL: Record<EntryCategory, string> = {
+  activity: "กิจกรรม",
+  harvest: "เก็บเกี่ยว",
+  expense: "รายจ่าย",
+};
+
+// Dot color per entry category on the calendar grid — bg-* for the small dot
+// badges, ring-* for the legend swatches below the grid.
+const CATEGORY_DOT: Record<EntryCategory, string> = {
+  activity: "bg-primary",
+  harvest: "bg-accent",
+  expense: "bg-red-500",
+};
 
 function monthIndex(now: Date): number {
   return now.getFullYear() * 12 + now.getMonth();
@@ -117,14 +132,12 @@ export default function CalendarPage() {
     setSelectedDate(todayISODate());
   }
 
-  function badgesForDate(date: string): string[] {
-    const icons = new Set<string>();
-    for (const a of activities) {
-      if (a.date === date) icons.add(ACTIVITY_ICONS[a.activity_type] ?? DEFAULT_ACTIVITY_ICON);
-    }
-    if (harvests.some((h) => h.sale_date === date)) icons.add(HARVEST_ICON);
-    if (expenses.some((e) => e.date === date)) icons.add(EXPENSE_ICON);
-    return Array.from(icons);
+  function categoriesForDate(date: string): EntryCategory[] {
+    const cats: EntryCategory[] = [];
+    if (activities.some((a) => a.date === date)) cats.push("activity");
+    if (harvests.some((h) => h.sale_date === date)) cats.push("harvest");
+    if (expenses.some((e) => e.date === date)) cats.push("expense");
+    return cats;
   }
 
   const weeks = getMonthMatrix(year, month);
@@ -154,7 +167,7 @@ export default function CalendarPage() {
           <button
             type="button"
             onClick={goToday}
-            className="text-base font-bold text-stone-800 active:opacity-70"
+            className="rounded-xl bg-primary px-3.5 py-1.5 text-sm font-bold text-white active:opacity-90"
           >
             {formatMonthYearThai(year, month)}
           </button>
@@ -184,7 +197,7 @@ export default function CalendarPage() {
                   const dayNum = Number(date.slice(-2));
                   const isToday = date === today;
                   const isSelected = date === selectedDate;
-                  const badges = badgesForDate(date);
+                  const categories = categoriesForDate(date);
                   return (
                     <button
                       key={j}
@@ -199,9 +212,14 @@ export default function CalendarPage() {
                       }`}
                     >
                       <span>{dayNum}</span>
-                      <span className="flex flex-wrap items-center justify-center gap-x-0.5 text-[10px] leading-none">
-                        {badges.slice(0, 3).map((icon, k) => (
-                          <span key={k}>{icon}</span>
+                      <span className="flex items-center justify-center gap-0.5">
+                        {categories.map((cat) => (
+                          <span
+                            key={cat}
+                            className={`h-1.5 w-1.5 rounded-full ${
+                              isSelected ? "bg-white/80" : CATEGORY_DOT[cat]
+                            }`}
+                          />
                         ))}
                       </span>
                     </button>
@@ -210,6 +228,15 @@ export default function CalendarPage() {
               </div>
             ))}
           </div>
+        </div>
+
+        <div className="flex gap-4 px-1">
+          {(Object.keys(CATEGORY_LABEL) as EntryCategory[]).map((cat) => (
+            <div key={cat} className="flex items-center gap-1.5">
+              <span className={`h-2 w-2 rounded-full ${CATEGORY_DOT[cat]}`} />
+              <span className="text-xs text-stone-500">{CATEGORY_LABEL[cat]}</span>
+            </div>
+          ))}
         </div>
 
         {loading ? (

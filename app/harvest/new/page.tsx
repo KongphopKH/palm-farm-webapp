@@ -88,70 +88,72 @@ export default function NewHarvestPage() {
       <form onSubmit={handleSubmit} className="flex flex-1 flex-col gap-4 px-4 py-5">
         {!isSupabaseConfigured ? <Banner variant="warning">ยังไม่ได้เชื่อมต่อ Supabase</Banner> : null}
         {error ? <Banner variant="error">{error}</Banner> : null}
-        {success ? <Banner variant="success">บันทึกสำเร็จ! 🎉</Banner> : null}
+        {success ? <Banner variant="success">บันทึกสำเร็จ!</Banner> : null}
 
-        <SelectField
-          label="แปลงปาล์ม"
-          value={plotId}
-          onChange={(e) => setPlotId(e.target.value)}
-          required
-        >
-          <option value="" disabled>
-            เลือกแปลง
-          </option>
-          {plots.map((plot) => (
-            <option key={plot.id} value={plot.id}>
-              {plot.name}
+        <div className="flex flex-col gap-4 rounded-2xl bg-white p-4 shadow-sm ring-1 ring-stone-200">
+          <SelectField
+            label="แปลงปาล์ม"
+            value={plotId}
+            onChange={(e) => setPlotId(e.target.value)}
+            required
+          >
+            <option value="" disabled>
+              เลือกแปลง
             </option>
-          ))}
-        </SelectField>
+            {plots.map((plot) => (
+              <option key={plot.id} value={plot.id}>
+                {plot.name}
+              </option>
+            ))}
+          </SelectField>
 
-        <TextField
-          label="น้ำหนักสุทธิ"
-          suffix="กก."
-          type="number"
-          inputMode="decimal"
-          step="0.01"
-          min="0"
-          placeholder="0.00"
-          value={weightKg}
-          onChange={(e) => setWeightKg(e.target.value)}
-          required
-        />
+          <TextField
+            label="น้ำหนักสุทธิ"
+            suffix="กก."
+            type="number"
+            inputMode="decimal"
+            step="0.01"
+            min="0"
+            placeholder="0.00"
+            value={weightKg}
+            onChange={(e) => setWeightKg(e.target.value)}
+            required
+          />
 
-        <TextField
-          label="ราคาขายต่อกิโลกรัม"
-          suffix="บาท/กก."
-          type="number"
-          inputMode="decimal"
-          step="0.01"
-          min="0"
-          placeholder="0.00"
-          value={pricePerKg}
-          onChange={(e) => setPricePerKg(e.target.value)}
-          required
-        />
+          <TextField
+            label="ราคาขายต่อกิโลกรัม"
+            suffix="บาท/กก."
+            type="number"
+            inputMode="decimal"
+            step="0.01"
+            min="0"
+            placeholder="0.00"
+            value={pricePerKg}
+            onChange={(e) => setPricePerKg(e.target.value)}
+            required
+          />
 
-        <div className="rounded-2xl bg-primary/10 p-4 text-center ring-1 ring-primary/20">
-          <p className="text-sm font-medium text-primary">ยอดเงินรวม</p>
-          <p className="mt-1 text-3xl font-extrabold text-primary">{formatCurrency(totalPrice)}</p>
+          <div className="rounded-2xl bg-primary/10 p-4 text-center ring-1 ring-primary/20">
+            <p className="text-sm font-medium text-primary">ยอดเงินรวม</p>
+            <p className="mt-1 text-3xl font-extrabold text-primary">{formatCurrency(totalPrice)}</p>
+          </div>
+
+          <TextField
+            label="เลขที่ใบเสร็จ"
+            type="text"
+            placeholder="เช่น 00123"
+            value={receiptNumber}
+            onChange={(e) => setReceiptNumber(e.target.value)}
+          />
+
+          <TextField
+            label="วันที่ขาย"
+            type="date"
+            value={saleDate}
+            onChange={(e) => setSaleDate(e.target.value)}
+            required
+          />
         </div>
-
-        <TextField
-          label="เลขที่ใบเสร็จ"
-          type="text"
-          placeholder="เช่น 00123"
-          value={receiptNumber}
-          onChange={(e) => setReceiptNumber(e.target.value)}
-        />
-
-        <TextField
-          label="วันที่ขาย"
-          type="date"
-          value={saleDate}
-          onChange={(e) => setSaleDate(e.target.value)}
-          required
-        />
 
         <div className="mt-2">
           <SubmitButton loading={submitting} colorClass="bg-primary active:bg-primary-dark">

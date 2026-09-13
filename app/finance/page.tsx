@@ -1,10 +1,9 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Download } from "lucide-react";
+import { Download, TrendingDown, TrendingUp } from "lucide-react";
 import PageHeader from "@/components/PageHeader";
 import Banner from "@/components/Banner";
-import StatCard from "@/components/StatCard";
 import HarvestRow from "@/components/HarvestRow";
 import ExpenseRow from "@/components/ExpenseRow";
 import FinanceTrendChart from "@/components/FinanceTrendChart";
@@ -72,6 +71,7 @@ export default function FinancePage() {
 
   const totalIncome = harvests.reduce((sum, h) => sum + Number(h.total_price ?? 0), 0);
   const totalExpense = expenses.reduce((sum, e) => sum + Number(e.amount ?? 0), 0);
+  const netProfit = totalIncome - totalExpense;
 
   const currentTabHasData = tab === "income" ? harvests.length > 0 : expenses.length > 0;
 
@@ -109,8 +109,26 @@ export default function FinancePage() {
         {error ? <Banner variant="error">{error}</Banner> : null}
 
         <div className="grid grid-cols-2 gap-3">
-          <StatCard label="รายรับรวม" value={formatCurrency(totalIncome)} tone="positive" />
-          <StatCard label="รายจ่ายรวม" value={formatCurrency(totalExpense)} tone="negative" />
+          <div className="rounded-2xl bg-primary/10 p-3.5">
+            <p className="flex items-center gap-1 text-xs font-medium text-primary/80">
+              <TrendingUp className="h-3.5 w-3.5" /> รายรับรวม
+            </p>
+            <p className="mt-1 text-lg font-bold text-primary">{formatCurrency(totalIncome)}</p>
+          </div>
+          <div className="rounded-2xl bg-red-50 p-3.5">
+            <p className="flex items-center gap-1 text-xs font-medium text-red-600/80">
+              <TrendingDown className="h-3.5 w-3.5" /> รายจ่ายรวม
+            </p>
+            <p className="mt-1 text-lg font-bold text-red-600">{formatCurrency(totalExpense)}</p>
+          </div>
+        </div>
+
+        <div className="flex items-center justify-between rounded-2xl bg-amber-50 px-4 py-3">
+          <span className="text-sm font-semibold text-amber-800">กำไรสุทธิ</span>
+          <span className={`text-lg font-extrabold ${netProfit < 0 ? "text-red-600" : "text-primary"}`}>
+            {netProfit >= 0 ? "+" : ""}
+            {formatCurrency(netProfit)}
+          </span>
         </div>
 
         {!loading ? <FinanceTrendChart data={trend} /> : null}

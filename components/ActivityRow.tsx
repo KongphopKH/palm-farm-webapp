@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Check, Pencil, Trash2, X } from "lucide-react";
+import { Check, ClipboardList, Pencil, Trash2, X } from "lucide-react";
 import { formatDateThai } from "@/lib/format";
 import { deleteActivity, updateActivity } from "@/lib/queries";
 import { ACTIVITY_TYPES } from "@/lib/constants";
@@ -126,6 +126,9 @@ export default function ActivityRow({ activity, plots, onChanged }: ActivityRowP
 
   return (
     <div className="flex items-center gap-3 rounded-2xl bg-white p-4 shadow-sm ring-1 ring-stone-200">
+      <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-blue-600/10 text-blue-600">
+        <ClipboardList className="h-5 w-5" />
+      </span>
       <div className="min-w-0 flex-1">
         <p className="truncate text-xs text-stone-500">
           {formatDateThai(activity.date)} · {plotName}

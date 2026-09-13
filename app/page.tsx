@@ -1,9 +1,21 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { ChevronDown, ChevronUp, ClipboardList, Clock3, ReceiptText, ShoppingBasket } from "lucide-react";
+import {
+  ChevronDown,
+  ChevronUp,
+  ClipboardList,
+  Clock3,
+  CloudRain,
+  ReceiptText,
+  ShoppingBasket,
+  Sprout,
+  Sun,
+  TriangleAlert,
+} from "lucide-react";
 import QuickActionButton from "@/components/QuickActionButton";
-import StatCard from "@/components/StatCard";
+import FinanceSummaryCard from "@/components/FinanceSummaryCard";
+import ReminderAlert from "@/components/ReminderAlert";
 import Banner from "@/components/Banner";
 import FarmLocationPrompt from "@/components/FarmLocationPrompt";
 import WeatherOutlook from "@/components/WeatherOutlook";
@@ -17,7 +29,7 @@ import {
   type MonthlySummary,
 } from "@/lib/queries";
 import { fetchWeatherTip, type WeatherTip } from "@/lib/weather";
-import { daysFromToday, formatCurrency, getPlantAgeReminders } from "@/lib/format";
+import { daysFromToday, getPlantAgeReminders } from "@/lib/format";
 import { HARVEST_CYCLE_DAYS } from "@/lib/constants";
 import type { FarmSettings, Plot } from "@/types";
 
@@ -96,6 +108,11 @@ export default function DashboardPage() {
     month: "long",
   }).format(new Date());
 
+  const monthLabel = new Intl.DateTimeFormat("th-TH", {
+    month: "long",
+    year: "numeric",
+  }).format(new Date());
+
   let harvestCountdownLabel = "ยังไม่มีข้อมูลรอบตัดล่าสุด";
   if (lastHarvestDate) {
     const daysSinceLastHarvest = -daysFromToday(lastHarvestDate);
@@ -133,71 +150,71 @@ export default function DashboardPage() {
             href="/harvest/new"
             label="ขายปาล์ม"
             icon={<ShoppingBasket className="h-6 w-6" />}
-            colorClass="bg-primary"
+            tintClass="bg-primary/10 text-primary"
           />
           <QuickActionButton
             href="/activities/new"
             label="บันทึกกิจกรรม"
             icon={<ClipboardList className="h-6 w-6" />}
-            colorClass="bg-blue-600"
+            tintClass="bg-blue-600/10 text-blue-600"
           />
           <QuickActionButton
             href="/expenses/new"
             label="บันทึกรายจ่าย"
             icon={<ReceiptText className="h-6 w-6" />}
-            colorClass="bg-red-600"
+            tintClass="bg-red-600/10 text-red-600"
           />
         </div>
       </section>
 
-      <section>
-        <h2 className="mb-2 text-sm font-bold uppercase tracking-wide text-stone-400">
-          สรุปการเงินเดือนนี้
-        </h2>
-        <div className="grid grid-cols-2 gap-3">
-          <StatCard
-            label="รายรับรวม"
-            value={loading ? "…" : formatCurrency(summary?.income ?? 0)}
-            tone="positive"
-          />
-          <StatCard
-            label="รายจ่ายรวม"
-            value={loading ? "…" : formatCurrency(summary?.expense ?? 0)}
-            tone="negative"
-          />
-          <div className="col-span-2">
-            <StatCard
-              label="กำไรสุทธิ"
-              value={loading ? "…" : formatCurrency(summary?.profit ?? 0)}
-              tone={summary && summary.profit < 0 ? "negative" : "positive"}
-            />
-          </div>
-        </div>
-      </section>
+      <FinanceSummaryCard
+        monthLabel={monthLabel}
+        income={summary?.income ?? 0}
+        expense={summary?.expense ?? 0}
+        loading={loading}
+      />
 
       <section className="space-y-3">
         <h2 className="text-sm font-bold uppercase tracking-wide text-stone-400">
           Smart Reminders
         </h2>
-        <div className="flex items-center gap-3 rounded-2xl bg-white p-4 shadow-sm ring-1 ring-stone-200">
-          <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-amber-100 text-amber-600">
-            <Clock3 className="h-6 w-6" />
-          </span>
-          <div>
-            <p className="text-sm text-stone-500">รอบตัดปาล์มถัดไป</p>
-            <p className="text-lg font-bold text-stone-800">{harvestCountdownLabel}</p>
-          </div>
-        </div>
+
+        <ReminderAlert
+          variant="info"
+          icon={<Clock3 className="h-5 w-5" />}
+          title="รอบตัดปาล์มถัดไป"
+          description={harvestCountdownLabel}
+        />
+
         {plantAgeReminders.map((reminder) => (
-          <Banner
+          <ReminderAlert
             key={`${reminder.type}-${reminder.message}`}
             variant={reminder.type === "replant" ? "warning" : "success"}
-          >
-            {reminder.message}
-          </Banner>
+            icon={
+              reminder.type === "replant" ? (
+                <TriangleAlert className="h-5 w-5" />
+              ) : (
+                <Sprout className="h-5 w-5" />
+              )
+            }
+            title={reminder.type === "replant" ? "ควรวางแผนปลูกทดแทน" : "ใกล้ถึงช่วงให้ผลผลิต"}
+            description={reminder.message}
+          />
         ))}
+
         {weather ? (
-          <Banner variant={weather.isRaining ? "warning" : "success"}>{weather.message}</Banner>
+          <ReminderAlert
+            variant={weather.isRaining ? "warning" : "success"}
+            icon={
+              weather.isRaining ? (
+                <CloudRain className="h-5 w-5" />
+              ) : (
+                <Sun className="h-5 w-5" />
+              )
+            }
+            title={weather.isRaining ? "ฝนตกวันนี้" : "อากาศวันนี้"}
+            description={weather.message}
+          />
         ) : null}
         {weather ? <RainWindowNotice windows={weather.rainWindowsToday} /> : null}
 

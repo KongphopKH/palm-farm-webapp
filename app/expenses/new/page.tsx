@@ -3,7 +3,7 @@
 import { useState, type FormEvent } from "react";
 import { useRouter } from "next/navigation";
 import PageHeader from "@/components/PageHeader";
-import { SelectField, TextAreaField, TextField } from "@/components/FormControls";
+import { CategoryChips, TextAreaField, TextField } from "@/components/FormControls";
 import SubmitButton from "@/components/SubmitButton";
 import Banner from "@/components/Banner";
 import { addExpense } from "@/lib/queries";
@@ -52,49 +52,46 @@ export default function NewExpensePage() {
       <form onSubmit={handleSubmit} className="flex flex-1 flex-col gap-4 px-4 py-5">
         {!isSupabaseConfigured ? <Banner variant="warning">ยังไม่ได้เชื่อมต่อ Supabase</Banner> : null}
         {error ? <Banner variant="error">{error}</Banner> : null}
-        {success ? <Banner variant="success">บันทึกสำเร็จ! 🎉</Banner> : null}
+        {success ? <Banner variant="success">บันทึกสำเร็จ!</Banner> : null}
 
-        <SelectField
-          label="หมวดหมู่รายจ่าย"
-          value={category}
-          onChange={(e) => setCategory(e.target.value)}
-          required
-        >
-          {EXPENSE_CATEGORIES.map((c) => (
-            <option key={c} value={c}>
-              {c}
-            </option>
-          ))}
-        </SelectField>
+        <div className="flex flex-col gap-4 rounded-2xl bg-white p-4 shadow-sm ring-1 ring-stone-200">
+          <CategoryChips
+            label="หมวดหมู่รายจ่าย"
+            options={EXPENSE_CATEGORIES}
+            value={category}
+            onChange={setCategory}
+            activeClassName="bg-red-600 text-white"
+          />
 
-        <TextField
-          label="จำนวนเงิน"
-          suffix="บาท"
-          type="number"
-          inputMode="decimal"
-          step="0.01"
-          min="0"
-          placeholder="0.00"
-          value={amount}
-          onChange={(e) => setAmount(e.target.value)}
-          required
-        />
+          <TextField
+            label="จำนวนเงิน"
+            suffix="บาท"
+            type="number"
+            inputMode="decimal"
+            step="0.01"
+            min="0"
+            placeholder="0.00"
+            value={amount}
+            onChange={(e) => setAmount(e.target.value)}
+            required
+          />
 
-        <TextAreaField
-          label="รายละเอียดเพิ่มเติม"
-          rows={3}
-          placeholder="เช่น ค่าจ้างตัดหญ้ารอบเดือนนี้"
-          value={description}
-          onChange={(e) => setDescription(e.target.value)}
-        />
+          <TextAreaField
+            label="รายละเอียดเพิ่มเติม"
+            rows={3}
+            placeholder="เช่น ค่าจ้างตัดหญ้ารอบเดือนนี้"
+            value={description}
+            onChange={(e) => setDescription(e.target.value)}
+          />
 
-        <TextField
-          label="วันที่จ่าย"
-          type="date"
-          value={date}
-          onChange={(e) => setDate(e.target.value)}
-          required
-        />
+          <TextField
+            label="วันที่จ่าย"
+            type="date"
+            value={date}
+            onChange={(e) => setDate(e.target.value)}
+            required
+          />
+        </div>
 
         <div className="mt-2">
           <SubmitButton loading={submitting} colorClass="bg-red-600 active:bg-red-700">

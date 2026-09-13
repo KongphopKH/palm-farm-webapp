@@ -159,29 +159,36 @@ export default function PlotCard({ plot, onChanged }: PlotCardProps) {
         </div>
       </div>
       {error ? <p className="mt-2 text-sm font-medium text-red-600">{error}</p> : null}
-      <div className="mt-4 grid grid-cols-2 gap-3">
-        <div>
-          <p className="text-xs text-stone-500">จำนวนต้น</p>
-          <p className="text-xl font-bold text-stone-800">{formatNumber(plot.amount)} ต้น</p>
+
+      <div className="mt-4 grid grid-cols-3 gap-2">
+        <div className="rounded-xl bg-stone-50 px-2 py-2.5 text-center">
+          <p className="text-sm font-bold text-stone-800">{formatNumber(plot.amount)}</p>
+          <p className="mt-0.5 text-[11px] text-stone-500">ต้น</p>
         </div>
-        <div>
-          <p className="text-xs text-stone-500">ขนาดพื้นที่</p>
-          <p className="text-xl font-bold text-stone-800">{formatNumber(plot.area_size, 2)} ไร่</p>
+        <div className="rounded-xl bg-stone-50 px-2 py-2.5 text-center">
+          <p className="text-sm font-bold text-stone-800">{formatNumber(plot.area_size, 2)}</p>
+          <p className="mt-0.5 text-[11px] text-stone-500">ไร่</p>
         </div>
-        <div className="col-span-2">
-          <p className="text-xs text-stone-500">อายุต้นปาล์ม</p>
-          {plot.planted_date ? (
-            <>
-              <p className="text-xl font-bold text-stone-800">{formatPlantAge(plot.planted_date)}</p>
-              <p className="text-sm font-medium text-stone-500">
-                {getPlantGrowthStage(getPlantAgeYears(plot.planted_date)).label}
-              </p>
-            </>
-          ) : (
-            <p className="text-xl font-bold text-stone-800">ยังไม่ระบุวันที่ปลูก</p>
-          )}
+        <div className="rounded-xl bg-stone-50 px-2 py-2.5 text-center">
+          <p className="text-sm font-bold text-stone-800">
+            {plot.planted_date ? formatPlantAge(plot.planted_date) : "-"}
+          </p>
+          <p className="mt-0.5 text-[11px] text-stone-500">อายุต้น</p>
         </div>
       </div>
+
+      {plot.planted_date ? (
+        (() => {
+          const stage = getPlantGrowthStage(getPlantAgeYears(plot.planted_date));
+          return (
+            <div className={`mt-3 rounded-lg border-l-4 px-3 py-2 ${stage.bg} ${stage.border}`}>
+              <p className={`text-xs font-bold ${stage.text}`}>{stage.label}</p>
+            </div>
+          );
+        })()
+      ) : (
+        <p className="mt-3 text-xs text-stone-400">ยังไม่ระบุวันที่ปลูก — ใช้คำนวณอายุต้นปาล์ม</p>
+      )}
     </div>
   );
 }

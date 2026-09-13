@@ -125,8 +125,14 @@ export function formatPlantAge(plantedDate: string): string {
 
 /** ช่วงการเจริญเติบโตของต้นปาล์ม ณ อายุที่กำหนด — เลือกช่วงล่าสุดใน
  *  PALM_GROWTH_STAGES ที่ minYears <= อายุ (ปี) */
-export function getPlantGrowthStage(ageYears: number): { key: string; label: string } {
-  let current: { key: string; label: string } = PALM_GROWTH_STAGES[0];
+export function getPlantGrowthStage(ageYears: number): {
+  key: string;
+  label: string;
+  text: string;
+  bg: string;
+  border: string;
+} {
+  let current: (typeof PALM_GROWTH_STAGES)[number] = PALM_GROWTH_STAGES[0];
   for (const stage of PALM_GROWTH_STAGES) {
     if (ageYears >= stage.minYears) current = stage;
   }
@@ -158,14 +164,14 @@ export function getPlantAgeReminders(
   if (monthsUntilFruiting > 0 && monthsUntilFruiting <= PALM_FRUITING_WARNING_MONTHS) {
     reminders.push({
       type: "fruiting-soon",
-      message: `🌱 ต้นปาล์มแปลง "${plotName}" จะเริ่มให้ผลผลิตในอีกประมาณ ${monthsUntilFruiting} เดือน`,
+      message: `ต้นปาล์มแปลง "${plotName}" จะเริ่มให้ผลผลิตในอีกประมาณ ${monthsUntilFruiting} เดือน`,
     });
   }
 
   if (ageYears >= PALM_REPLANT_WARNING_AGE_YEARS) {
     reminders.push({
       type: "replant",
-      message: `🌴 ต้นปาล์มแปลง "${plotName}" อายุ ${Math.floor(ageYears)} ปีแล้ว ควรเริ่มวางแผนปลูกทดแทน`,
+      message: `ต้นปาล์มแปลง "${plotName}" อายุ ${Math.floor(ageYears)} ปีแล้ว ควรเริ่มวางแผนปลูกทดแทน`,
     });
   }
 

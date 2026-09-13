@@ -2,7 +2,7 @@
 
 import { useEffect, useState, type FormEvent } from "react";
 import PageHeader from "@/components/PageHeader";
-import { SelectField, TextAreaField, TextField } from "@/components/FormControls";
+import { CategoryChips, SelectField, TextAreaField, TextField } from "@/components/FormControls";
 import SubmitButton from "@/components/SubmitButton";
 import Banner from "@/components/Banner";
 import ActivityRow from "@/components/ActivityRow";
@@ -95,9 +95,20 @@ export default function NewActivityPage() {
       <div className="flex flex-1 flex-col gap-4 px-4 py-5">
         {!isSupabaseConfigured ? <Banner variant="warning">ยังไม่ได้เชื่อมต่อ Supabase</Banner> : null}
         {error ? <Banner variant="error">{error}</Banner> : null}
-        {success ? <Banner variant="success">บันทึกสำเร็จ! 🎉</Banner> : null}
+        {success ? <Banner variant="success">บันทึกสำเร็จ!</Banner> : null}
 
-        <form onSubmit={handleSubmit} className="flex flex-col gap-4">
+        <form
+          onSubmit={handleSubmit}
+          className="flex flex-col gap-4 rounded-2xl bg-white p-4 shadow-sm ring-1 ring-stone-200"
+        >
+          <CategoryChips
+            label="ประเภทกิจกรรม"
+            options={ACTIVITY_TYPES}
+            value={activityType}
+            onChange={setActivityType}
+            activeClassName="bg-blue-600 text-white"
+          />
+
           <SelectField
             label="แปลงปาล์ม"
             value={plotId}
@@ -110,19 +121,6 @@ export default function NewActivityPage() {
             {plots.map((plot) => (
               <option key={plot.id} value={plot.id}>
                 {plot.name}
-              </option>
-            ))}
-          </SelectField>
-
-          <SelectField
-            label="ประเภทกิจกรรม"
-            value={activityType}
-            onChange={(e) => setActivityType(e.target.value)}
-            required
-          >
-            {ACTIVITY_TYPES.map((type) => (
-              <option key={type} value={type}>
-                {type}
               </option>
             ))}
           </SelectField>

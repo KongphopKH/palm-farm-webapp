@@ -70,11 +70,11 @@ export async function fetchWeatherTip(
 
     let message: string;
     if (isRaining) {
-      message = "🌧️ ฝนตก แนะนำให้งดใส่ปุ๋ยและงดฉีดยาในวันนี้";
+      message = "ฝนตก แนะนำให้งดใส่ปุ๋ยและงดฉีดยาในวันนี้";
     } else if (typeof tempC === "number" && tempC >= 35) {
-      message = "☀️ อากาศร้อนจัด ควรรดน้ำเพิ่มและเลี่ยงงานกลางแจ้งช่วงเที่ยง";
+      message = "อากาศร้อนจัด ควรรดน้ำเพิ่มและเลี่ยงงานกลางแจ้งช่วงเที่ยง";
     } else {
-      message = "🌤️ อากาศเหมาะสมสำหรับทำงานในแปลงตามปกติ";
+      message = "อากาศเหมาะสมสำหรับทำงานในแปลงตามปกติ";
     }
 
     const rainWindowsToday = parseRainWindowsToday(data?.hourly);

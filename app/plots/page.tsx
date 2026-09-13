@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState, type FormEvent } from "react";
-import { Plus } from "lucide-react";
+import { CircleCheck, Map, Plus, Trees } from "lucide-react";
 import PageHeader from "@/components/PageHeader";
 import PlotCard from "@/components/PlotCard";
 import Banner from "@/components/Banner";
@@ -9,6 +9,7 @@ import { TextField } from "@/components/FormControls";
 import SubmitButton from "@/components/SubmitButton";
 import { addPlot, getPlots } from "@/lib/queries";
 import { isSupabaseConfigured } from "@/lib/supabase";
+import { formatNumber, getPlantAgeYears, getPlantGrowthStage } from "@/lib/format";
 import type { Plot } from "@/types";
 
 export default function PlotsPage() {
@@ -92,12 +93,40 @@ export default function PlotsPage() {
     }
   }
 
+  const totalTrees = plots.reduce((sum, p) => sum + p.amount, 0);
+  const totalArea = plots.reduce((sum, p) => sum + p.area_size, 0);
+  const goodYieldCount = plots.filter((p) => {
+    if (!p.planted_date) return false;
+    const key = getPlantGrowthStage(getPlantAgeYears(p.planted_date)).key;
+    return key === "increasing-yield" || key === "peak-yield";
+  }).length;
+
   return (
     <div className="flex flex-1 flex-col">
       <PageHeader title="จัดการแปลงเกษตร" />
       <div className="flex flex-1 flex-col gap-4 px-4 py-5">
         {!isSupabaseConfigured ? <Banner variant="warning">ยังไม่ได้เชื่อมต่อ Supabase</Banner> : null}
         {error ? <Banner variant="error">{error}</Banner> : null}
+
+        {!loading && plots.length > 0 ? (
+          <div className="grid grid-cols-3 gap-2">
+            <div className="rounded-2xl bg-white p-3 text-center shadow-sm ring-1 ring-stone-200">
+              <Trees className="mx-auto h-4 w-4 text-primary" />
+              <p className="mt-1 text-base font-bold text-stone-800">{formatNumber(totalTrees)}</p>
+              <p className="text-[11px] text-stone-500">ต้นทั้งหมด</p>
+            </div>
+            <div className="rounded-2xl bg-white p-3 text-center shadow-sm ring-1 ring-stone-200">
+              <Map className="mx-auto h-4 w-4 text-primary" />
+              <p className="mt-1 text-base font-bold text-stone-800">{formatNumber(totalArea, 2)}</p>
+              <p className="text-[11px] text-stone-500">ไร่รวม</p>
+            </div>
+            <div className="rounded-2xl bg-white p-3 text-center shadow-sm ring-1 ring-stone-200">
+              <CircleCheck className="mx-auto h-4 w-4 text-primary" />
+              <p className="mt-1 text-base font-bold text-stone-800">{goodYieldCount}</p>
+              <p className="text-[11px] text-stone-500">แปลงผลผลิตดี</p>
+            </div>
+          </div>
+        ) : null}
 
         <button
           type="button"
