@@ -6,7 +6,7 @@ interface BannerProps {
 }
 
 const styles: Record<BannerProps["variant"], string> = {
-  success: "bg-green-50 text-green-700 ring-green-200",
+  success: "bg-primary/10 text-primary ring-primary/20",
   error: "bg-red-50 text-red-700 ring-red-200",
   warning: "bg-amber-50 text-amber-700 ring-amber-200",
 };

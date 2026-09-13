@@ -24,7 +24,7 @@ export default function BottomNav() {
               <Link
                 href={href}
                 className={`flex flex-col items-center gap-1 py-2.5 text-xs font-semibold ${
-                  active ? "text-green-700" : "text-stone-400"
+                  active ? "text-primary" : "text-stone-400"
                 }`}
               >
                 <Icon className="h-6 w-6" strokeWidth={active ? 2.5 : 2} />

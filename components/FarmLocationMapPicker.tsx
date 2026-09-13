@@ -14,8 +14,8 @@ interface FarmLocationMapPickerProps {
 
 const MARKER_STYLE = {
   radius: 10,
-  color: "#15803d",
-  fillColor: "#22c55e",
+  color: "#2d6a4f",
+  fillColor: "#40916c",
   fillOpacity: 0.9,
   weight: 2,
 };

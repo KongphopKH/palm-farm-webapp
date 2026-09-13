@@ -37,7 +37,7 @@ export function TextField({ label, suffix, className = "", ...props }: TextField
     <FieldWrapper label={label} suffix={suffix}>
       <input
         {...props}
-        className={`w-full rounded-xl border border-stone-300 bg-white px-4 py-3.5 text-lg font-medium text-stone-800 focus:border-green-600 focus:outline-none focus:ring-2 focus:ring-green-100 ${
+        className={`w-full rounded-xl border border-stone-300 bg-white px-4 py-3.5 text-lg font-medium text-stone-800 focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/15 ${
           suffix ? "pr-16" : ""
         } ${className}`}
       />
@@ -54,7 +54,7 @@ export function SelectField({ label, className = "", children, ...props }: Selec
     <FieldWrapper label={label}>
       <select
         {...props}
-        className={`w-full appearance-none rounded-xl border border-stone-300 bg-white px-4 py-3.5 text-lg font-medium text-stone-800 focus:border-green-600 focus:outline-none focus:ring-2 focus:ring-green-100 ${className}`}
+        className={`w-full appearance-none rounded-xl border border-stone-300 bg-white px-4 py-3.5 text-lg font-medium text-stone-800 focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/15 ${className}`}
       >
         {children}
       </select>
@@ -71,7 +71,7 @@ export function TextAreaField({ label, className = "", ...props }: TextAreaField
     <FieldWrapper label={label}>
       <textarea
         {...props}
-        className={`w-full rounded-xl border border-stone-300 bg-white px-4 py-3.5 text-base font-medium text-stone-800 focus:border-green-600 focus:outline-none focus:ring-2 focus:ring-green-100 ${className}`}
+        className={`w-full rounded-xl border border-stone-300 bg-white px-4 py-3.5 text-base font-medium text-stone-800 focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/15 ${className}`}
       />
     </FieldWrapper>
   );

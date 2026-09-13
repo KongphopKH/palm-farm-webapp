@@ -192,9 +192,9 @@ export default function CalendarPage() {
                       onClick={() => setSelectedDate(date)}
                       className={`flex aspect-square flex-col items-center justify-start gap-0.5 rounded-xl pt-1 text-sm transition ${
                         isSelected
-                          ? "bg-green-600 text-white font-bold"
+                          ? "bg-primary text-white font-bold"
                           : isToday
-                            ? "bg-green-50 text-green-700 font-bold ring-1 ring-green-300"
+                            ? "bg-primary/10 text-primary font-bold ring-1 ring-primary/30"
                             : "text-stone-700 active:bg-stone-100"
                       }`}
                     >

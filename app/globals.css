@@ -1,15 +1,31 @@
 @import "tailwindcss";
 
 :root {
-  --background: #fafaf9;
-  --foreground: #1c1917;
+  /* Warm cream background instead of plain gray-white — matches the palm
+     farm brand identity designed in Figma. */
+  --background: #faf8f5;
+  --foreground: #1c1a17;
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: "Leelawadee UI", "Noto Sans Thai", "Segoe UI", "PingFang TH", system-ui,
-    -apple-system, sans-serif;
+
+  /* Brand tokens from the Figma design ("Smart Palm Farm App Design") —
+     a muted forest green for primary actions/branding and a warm orange
+     accent for harvest/sale actions. Used as bg-primary, text-primary,
+     border-primary, bg-accent, text-accent, etc. Note: FinanceTrendChart.tsx
+     intentionally keeps its own blue/orange pair (validated colorblind-safe
+     via the dataviz skill) rather than switching to primary/accent here —
+     green vs. orange doesn't pass that same check. */
+  --color-primary: #2d6a4f;
+  --color-primary-dark: #24583f; /* pressed/hover shade, same role green-700 used to play */
+  --color-primary-foreground: #ffffff;
+  --color-accent: #e07c2b;
+  --color-accent-foreground: #ffffff;
+
+  --font-sans: "Sarabun", "Leelawadee UI", "Noto Sans Thai", "Segoe UI", "PingFang TH",
+    system-ui, -apple-system, sans-serif;
 }
 
 /*

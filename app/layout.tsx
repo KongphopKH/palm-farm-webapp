@@ -1,14 +1,19 @@
 import type { Metadata, Viewport } from "next";
+import "@fontsource/sarabun/400.css";
+import "@fontsource/sarabun/500.css";
+import "@fontsource/sarabun/600.css";
+import "@fontsource/sarabun/700.css";
+import "@fontsource/sarabun/800.css";
 import "./globals.css";
 import BottomNav from "@/components/BottomNav";
 import { basePath } from "@/lib/site";
 
-// Deliberately using a system font stack (see globals.css) instead of
-// next/font/google: it renders Thai text well on every platform out of the
-// box (Leelawadee UI / Noto Sans Thai / PingFang / etc.) without depending
-// on network access to fonts.googleapis.com at build time — important for
-// CI and sandboxed environments with restricted egress. Swap in next/font
-// if you want a specific custom typeface.
+// Sarabun via @fontsource (not next/font/google): the font files ship inside
+// the npm package and get bundled at build time, so there's no runtime
+// dependency on fonts.googleapis.com — important for CI and sandboxed
+// environments with restricted egress (next/font/google was ruled out
+// earlier for exactly that reason). System-font fallbacks stay in
+// globals.css's --font-sans in case the package is ever removed.
 
 export const metadata: Metadata = {
   title: "Smart Palm Farm | บริหารจัดการสวนปาล์ม",
@@ -32,13 +37,13 @@ export const viewport: Viewport = {
   width: "device-width",
   initialScale: 1,
   maximumScale: 1,
-  themeColor: "#15803d",
+  themeColor: "#2d6a4f",
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html lang="th" className="h-full">
-      <body className="flex min-h-full flex-col bg-stone-50 font-sans text-stone-800 antialiased">
+      <body className="flex min-h-full flex-col bg-background font-sans text-stone-800 antialiased">
         <div className="mx-auto flex w-full max-w-md flex-1 flex-col">
           <div className="flex-1 pb-4">{children}</div>
           <div className="sticky bottom-0">

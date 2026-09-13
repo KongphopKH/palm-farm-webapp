@@ -114,7 +114,7 @@ export default function DashboardPage() {
     <div className="flex flex-1 flex-col gap-5 px-4 pb-6 pt-5">
       <header>
         <p className="text-sm font-medium text-stone-500">{todayLabel}</p>
-        <h1 className="mt-0.5 text-2xl font-extrabold text-stone-800">🌴 Smart Palm Farm</h1>
+        <h1 className="mt-0.5 text-2xl font-extrabold text-stone-800">Smart Palm Farm</h1>
       </header>
 
       {!isSupabaseConfigured ? (
@@ -133,7 +133,7 @@ export default function DashboardPage() {
             href="/harvest/new"
             label="ขายปาล์ม"
             icon={<ShoppingBasket className="h-6 w-6" />}
-            colorClass="bg-green-600"
+            colorClass="bg-primary"
           />
           <QuickActionButton
             href="/activities/new"

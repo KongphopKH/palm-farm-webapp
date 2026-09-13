@@ -6,7 +6,7 @@ interface StatCardProps {
 
 export default function StatCard({ label, value, tone = "neutral" }: StatCardProps) {
   const toneClass =
-    tone === "positive" ? "text-green-700" : tone === "negative" ? "text-red-600" : "text-stone-800";
+    tone === "positive" ? "text-primary" : tone === "negative" ? "text-red-600" : "text-stone-800";
 
   return (
     <div className="rounded-2xl bg-white p-4 shadow-sm ring-1 ring-stone-200">

@@ -133,7 +133,7 @@ export default function HarvestRow({ harvest, plots, onChanged }: HarvestRowProp
             type="button"
             onClick={handleSave}
             disabled={saving}
-            className="flex flex-1 items-center justify-center gap-1.5 rounded-xl bg-green-600 py-2.5 text-sm font-bold text-white active:bg-green-700 disabled:opacity-60"
+            className="flex flex-1 items-center justify-center gap-1.5 rounded-xl bg-primary py-2.5 text-sm font-bold text-white active:bg-primary-dark disabled:opacity-60"
           >
             <Check className="h-4 w-4" /> {saving ? "กำลังบันทึก..." : "บันทึก"}
           </button>
@@ -159,7 +159,7 @@ export default function HarvestRow({ harvest, plots, onChanged }: HarvestRowProp
         <p className="text-base font-bold text-stone-800">{harvest.weight_kg} กก.</p>
         {error ? <p className="mt-1 text-xs font-medium text-red-600">{error}</p> : null}
       </div>
-      <p className="shrink-0 text-lg font-extrabold text-green-700">
+      <p className="shrink-0 text-lg font-extrabold text-primary">
         {formatCurrency(harvest.total_price)}
       </p>
       <div className="flex shrink-0 gap-1">

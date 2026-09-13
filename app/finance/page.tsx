@@ -120,7 +120,7 @@ export default function FinancePage() {
             type="button"
             onClick={() => setTab("income")}
             className={`flex-1 rounded-lg py-2.5 text-sm font-bold transition ${
-              tab === "income" ? "bg-white text-green-700 shadow-sm" : "text-stone-500"
+              tab === "income" ? "bg-white text-primary shadow-sm" : "text-stone-500"
             }`}
           >
             รายรับ (ขายปาล์ม)

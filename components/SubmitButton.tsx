@@ -9,7 +9,7 @@ interface SubmitButtonProps {
 export default function SubmitButton({
   loading,
   children,
-  colorClass = "bg-green-600 active:bg-green-700",
+  colorClass = "bg-primary active:bg-primary-dark",
 }: SubmitButtonProps) {
   return (
     <button

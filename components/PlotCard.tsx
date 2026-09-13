@@ -112,7 +112,7 @@ export default function PlotCard({ plot, onChanged }: PlotCardProps) {
             type="button"
             onClick={handleSave}
             disabled={saving}
-            className="flex flex-1 items-center justify-center gap-1.5 rounded-xl bg-green-600 py-2.5 text-sm font-bold text-white active:bg-green-700 disabled:opacity-60"
+            className="flex flex-1 items-center justify-center gap-1.5 rounded-xl bg-primary py-2.5 text-sm font-bold text-white active:bg-primary-dark disabled:opacity-60"
           >
             <Check className="h-4 w-4" /> {saving ? "กำลังบันทึก..." : "บันทึก"}
           </button>
@@ -134,7 +134,7 @@ export default function PlotCard({ plot, onChanged }: PlotCardProps) {
       <div className="flex items-start justify-between gap-2">
         <div className="flex flex-wrap items-center gap-2">
           <h3 className="text-lg font-bold text-stone-800">{plot.name}</h3>
-          <span className="shrink-0 rounded-full bg-green-100 px-3 py-1 text-xs font-semibold text-green-700">
+          <span className="shrink-0 rounded-full bg-primary/10 px-3 py-1 text-xs font-semibold text-primary">
             ปาล์มน้ำมัน
           </span>
         </div>

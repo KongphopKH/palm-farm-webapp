@@ -132,9 +132,9 @@ export default function NewHarvestPage() {
           required
         />
 
-        <div className="rounded-2xl bg-green-50 p-4 text-center ring-1 ring-green-200">
-          <p className="text-sm font-medium text-green-700">ยอดเงินรวม</p>
-          <p className="mt-1 text-3xl font-extrabold text-green-700">{formatCurrency(totalPrice)}</p>
+        <div className="rounded-2xl bg-primary/10 p-4 text-center ring-1 ring-primary/20">
+          <p className="text-sm font-medium text-primary">ยอดเงินรวม</p>
+          <p className="mt-1 text-3xl font-extrabold text-primary">{formatCurrency(totalPrice)}</p>
         </div>
 
         <TextField
@@ -154,7 +154,7 @@ export default function NewHarvestPage() {
         />
 
         <div className="mt-2">
-          <SubmitButton loading={submitting} colorClass="bg-green-600 active:bg-green-700">
+          <SubmitButton loading={submitting} colorClass="bg-primary active:bg-primary-dark">
             บันทึกการขาย
           </SubmitButton>
         </div>

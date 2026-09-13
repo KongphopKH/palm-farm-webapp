@@ -102,7 +102,7 @@ export default function PlotsPage() {
         <button
           type="button"
           onClick={() => setShowForm((v) => !v)}
-          className="flex items-center justify-center gap-2 rounded-2xl border-2 border-dashed border-green-300 py-3.5 text-base font-bold text-green-700 active:bg-green-50"
+          className="flex items-center justify-center gap-2 rounded-2xl border-2 border-dashed border-primary/40 py-3.5 text-base font-bold text-primary active:bg-primary/5"
         >
           <Plus className="h-5 w-5" />
           {showForm ? "ยกเลิก" : "เพิ่มแปลงใหม่"}
