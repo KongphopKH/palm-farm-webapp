@@ -1,6 +1,6 @@
 {
-  "name": "Smart Palm Farm — บริหารจัดการสวนปาล์ม",
-  "short_name": "Palm Farm",
+  "name": "PalmTrack — บริหารจัดการสวนปาล์ม",
+  "short_name": "PalmTrack",
   "description": "แอปบันทึกและบริหารจัดการสวนปาล์มน้ำมันสำหรับเกษตรกร",
   "start_url": ".",
   "scope": ".",

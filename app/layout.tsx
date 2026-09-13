@@ -16,7 +16,7 @@ import { basePath } from "@/lib/site";
 // globals.css's --font-sans in case the package is ever removed.
 
 export const metadata: Metadata = {
-  title: "Smart Palm Farm | บริหารจัดการสวนปาล์ม",
+  title: "PalmTrack | บริหารจัดการสวนปาล์ม",
   description: "แอปบันทึกและบริหารจัดการสวนปาล์มน้ำมันสำหรับเกษตรกร",
   manifest: `${basePath}/manifest.json`,
   icons: {
@@ -29,7 +29,7 @@ export const metadata: Metadata = {
   appleWebApp: {
     capable: true,
     statusBarStyle: "default",
-    title: "Palm Farm",
+    title: "PalmTrack",
   },
 };
 

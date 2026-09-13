@@ -1,12 +1,12 @@
-# 🌴 Smart Palm Farm App
+# PalmTrack
 
 เว็บแอปบริหารจัดการสวนปาล์มน้ำมัน ออกแบบ **mobile-first** สำหรับใช้งานจริงหน้าสวน
 ตัวหนังสือใหญ่ ปุ่มใหญ่ กดง่าย เหมาะกับผู้ใหญ่ที่ไม่คุ้นเทคโนโลยี
 
-ทำตั้งแต่ frontend, backend(Supabase),
+จัดทำเป็น **พอร์ตโฟลิโอฝึกงานสาย IT** — ครอบคลุมตั้งแต่ frontend, backend (Supabase),
 CI/CD (GitHub Actions), ไปจนถึง automated testing (Vitest)
 
-<!--**🔗 Live demo:** [https://kongphopkh.github.io/palm-farm-webapp/]-->
+**🔗 Live demo:** <https://YOUR-GITHUB-USERNAME.github.io/palm-farm-webapp/>
 <!-- TODO: แก้ลิงก์ด้านบนเป็น URL จริงหลัง deploy (รูปแบบ https://<username>.github.io/palm-farm-webapp/) -->
 
 ## สกรีนช็อต
@@ -16,8 +16,10 @@ CI/CD (GitHub Actions), ไปจนถึง automated testing (Vitest)
   แล้วนำไฟล์ไปวางในโฟลเดอร์ docs/screenshots/ ตามชื่อด้านล่างนี้ — พอวางไฟล์ครบ
   รูปจะขึ้นในหน้า README บน GitHub เองอัตโนมัติ ไม่ต้องแก้อะไรเพิ่ม
 -->
-<img width="434" height="900" alt="palm app" src="https://github.com/user-attachments/assets/5a5e8950-46f0-413b-95e0-dc21076f9cb1" />
 
+| หน้าแรก | ปฏิทินกิจกรรม | บัญชีฟาร์ม |
+|---|---|---|
+| ![หน้าแรก](docs/screenshots/dashboard.png) | ![ปฏิทิน](docs/screenshots/calendar.png) | ![บัญชีฟาร์ม](docs/screenshots/finance.png) |
 
 ## ฟีเจอร์หลัก
 
@@ -58,7 +60,7 @@ CI/CD (GitHub Actions), ไปจนถึง automated testing (Vitest)
 | Testing | Vitest |
 | Deploy / CI | GitHub Actions → GitHub Pages |
 
-<!--## จุดที่น่าสนใจทางเทคนิค
+## จุดที่น่าสนใจทางเทคนิค
 
 โปรเจกต์นี้เจอปัญหาจริงระหว่างพัฒนาหลายอย่างที่ต้องแก้ด้วยความเข้าใจ ไม่ใช่แค่ลองผิด
 ลองถูก:
@@ -80,7 +82,7 @@ CI/CD (GitHub Actions), ไปจนถึง automated testing (Vitest)
   ไม่มี `window`/DOM จริง และใช้ `L.circleMarker` แทน `L.marker` เพื่อเลี่ยงบั๊กไอคอนหมุด
   default ที่มักพังใต้ bundler สมัยใหม่
 - **CI รัน automated tests ก่อน build ทุกครั้ง** — [`.github/workflows/deploy.yml`](.github/workflows/deploy.yml)
-  รัน `npm test` ก่อนขั้นตอน build เสมอ ถ้าเทสต์พังจะไม่ deploy โค้ดที่มีบั๊กขึ้นเว็บจริง -->
+  รัน `npm test` ก่อนขั้นตอน build เสมอ ถ้าเทสต์พังจะไม่ deploy โค้ดที่มีบั๊กขึ้นเว็บจริง
 
 ## โครงสร้างโปรเจกต์
 
@@ -181,7 +183,7 @@ GitHub Pages** ให้อัตโนมัติ
    `NEXT_PUBLIC_FARM_LON` — ถ้าไม่ตั้ง ผู้ใช้ยังตั้งตำแหน่งสวนเองในแอปได้ผ่าน GPS
    หรือแผนที่อยู่ดี ค่านี้ใช้แค่เป็นตำแหน่งเริ่มต้นก่อนตั้งค่า
 
-<!-- ## หมายเหตุด้านเทคนิคอื่นๆ
+## หมายเหตุด้านเทคนิคอื่นๆ
 
 - `total_price` ในตาราง `harvests` เป็น **generated column** ในฐานข้อมูล
   (คำนวณจาก `weight_kg * price_per_kg` โดยอัตโนมัติ) เพื่อการันตีความถูกต้องของข้อมูล
@@ -190,9 +192,9 @@ GitHub Pages** ให้อัตโนมัติ
   (เจ้าของสวน) — โปรเจกต์นี้ตั้งใจไม่มีระบบล็อกอิน หากต้องการรองรับหลายผู้ใช้ในอนาคต
   ควรเพิ่มคอลัมน์ `user_id` และปรับ policy ให้ scoped ตามผู้ใช้ที่ล็อกอิน (Supabase Auth)
 - ธีมสีใช้โทนสว่าง (light theme) ตัวหนังสือ/ปุ่มขนาดใหญ่ตลอดทั้งแอป โดยตั้งใจไม่ตาม
-  dark mode ของระบบ เพื่อความคงที่และอ่านง่ายสำหรับผู้ใหญ่ -->
+  dark mode ของระบบ เพื่อความคงที่และอ่านง่ายสำหรับผู้ใหญ่
 
-## แนวทางต่อยอด 
+## แนวทางต่อยอด (ยังไม่ได้ทำ)
 
 - Yield analytics — วิเคราะห์ผลผลิตต่อไร่/ต่อต้น
-- PWA offline caching (มี `manifest.json` แล้ว ยังไม่มี service worker จริง) (ยังไม่ได้ทำ)
+- PWA offline caching (มี `manifest.json` แล้ว ยังไม่มี service worker จริง)

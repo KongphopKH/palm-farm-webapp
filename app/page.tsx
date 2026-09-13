@@ -131,7 +131,7 @@ export default function DashboardPage() {
     <div className="flex flex-1 flex-col gap-5 px-4 pb-6 pt-5">
       <header>
         <p className="text-sm font-medium text-stone-500">{todayLabel}</p>
-        <h1 className="mt-0.5 text-2xl font-extrabold text-stone-800">Smart Palm Farm</h1>
+        <h1 className="mt-0.5 text-2xl font-extrabold text-stone-800">PalmTrack</h1>
       </header>
 
       {!isSupabaseConfigured ? (
